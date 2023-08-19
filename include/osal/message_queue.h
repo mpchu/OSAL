@@ -11,7 +11,6 @@ namespace osal
 /**
  * @brief Portable IPC message queue object.
  * This class template declares operations and attributes common to all operating system message queues.
- *
  * @tparam handle_t Native OS handle type for IPC message queues
  */
 template <typename handle_t>
@@ -26,7 +25,7 @@ class message_queue
     std::size_t _max_num_items;
 
 public:
-    using native_handle_type = handle_t; /**< Underlying OS task handle implementation */
+    using native_handle_type = handle_t; /**< Underlying OS queue handle implementation */
 
     /**
      * @brief Creates a new IPC message queue in the operating system.
