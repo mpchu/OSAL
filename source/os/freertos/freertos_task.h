@@ -2,6 +2,7 @@
 #define _OSAL_OS_FREERTOS_FREERTOS_TASK_H_
 
 #include <functional>
+#include <type_traits>
 
 #include "osal/osal_config.h"
 #include "osal/os_task_attributes.h"
@@ -27,11 +28,11 @@ class freertos_task
 public:
     using native_handle_type = TaskHandle_t;
 
-    template<class Function, class... Args>
-    explicit freertos_task(task_attributes attr, Function &&func, Args &&... args) : _attributes(attr)
+    explicit freertos_task(task_attributes attr, std::function<void()> &&task_definition)
+        : _attributes(attr),
+          _handle(nullptr),
+          _task_definition(std::forward<std::function<void()>>(task_definition))
     {
-        _task_definition = [func, args...]() { func(args...); };
-
         BaseType_t success = xTaskCreate(&task_entry_point,
                                          _attributes.name(),
                                          _attributes.stack_size() / sizeof(configSTACK_DEPTH_TYPE),
