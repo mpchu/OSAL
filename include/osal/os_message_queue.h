@@ -1,11 +1,14 @@
-#ifndef _OSAL_MESSAGE_QUEUE_H_
-#define _OSAL_MESSAGE_QUEUE_H_
+#ifndef _OSAL_OS_MESSAGE_QUEUE_H_
+#define _OSAL_OS_MESSAGE_QUEUE_H_
 
 #include <chrono>
 #include <cstddef>
-#include "osal/osal_default_config.h"
+#include "osal/osal_config.h"
 
 namespace osal
+{
+
+namespace api
 {
 
 /**
@@ -13,12 +16,12 @@ namespace osal
  * This class template declares operations and attributes common to all operating system message queues.
  * @tparam handle_t Native OS handle type for IPC message queues
  */
-template <typename handle_t>
-class message_queue
+template <typename handle_t = configOSAL_MSG_QUEUE_NATIVE_HANDLE>
+class os_message_queue
 {
     char _name[configOSAL_MAXIMUM_QUEUE_NAME_SIZE];
 
-    handle_t _q_handle;
+    handle_t _handle;
 
     std::size_t _item_size;
 
@@ -34,21 +37,18 @@ public:
      * @param[in] item_size Size of a single item in the queue
      * @param[in] depth The maximum number of items that can be stored in the queue
      */
-    message_queue(osal::string_view name, std::size_t item_size, std::size_t depth);
+    os_message_queue(osal::string_view name, std::size_t item_size, std::size_t depth);
 
     /**
      * @brief Destroys the IPC message queue and cleans up any OS resources that were in use.
      */
-    ~message_queue();
+    ~os_message_queue();
 
-    // Copy & move constructors and assignment operators
-    message_queue(const osal::message_queue &rhs) = default;
-
-    message_queue(osal::message_queue &&rhs) = default;
-
-    osal::message_queue &operator=(const osal::message_queue &rhs) = default;
-
-    osal::message_queue &operator=(osal::message_queue &&rhs) = default;
+    /**
+     * @brief Returns the underlying operating system queue handle for this message queue.
+     * @return Native OS queue handle
+     */
+    os_message_queue::native_handle_type native_handle() { return _handle; }
 
     /**
      * @brief Sends data through the message queue.
@@ -57,8 +57,9 @@ public:
      * @param[in] timeout Maximum amount of time to attempt sending data
      * @return 0 on success, error codes otherwise
      */
-    template <class Rep, class Period>
-    int send(const void *data, std::size_t num_bytes, const std::chrono::duration<Rep, Period> &timeout);
+    int send(const void *data,
+             std::size_t num_bytes,
+             const std::chrono::milliseconds &timeout = infinite_timeout);
 
     /**
      * @brief Receives data from the message queue.
@@ -67,8 +68,9 @@ public:
      * @param[in] timeout Maximum amount of time to attempt receiving data
      * @return 0 on success, error codes otherwise 
      */
-    template <class Rep, class Period>
-    int receive(void *buffer, std::size_t buffer_size, const std::chrono::duration<Rep, Period> &timeout);
+    int receive(void *buffer,
+                std::size_t buffer_size,
+                const std::chrono::milliseconds &timeout = infinite_timeout);
 
     /**
      * @brief Attempts to send data through the message queue without blocking.
@@ -104,13 +106,13 @@ public:
      */
     osal::string_view name() { return _name; }
 
-    /**
-     * @brief Returns the underlying operating system queue handle for this message queue.
-     * @return Native OS queue handle
-     */
-    message_queue::native_handle_type native_handle() { return _q_handle; }
-
-    static constexpr std::chrono::milliseconds infinite_timeout = -1; /**< Timeout value used to block indefinitely on message queue operations */
+    static constexpr std::chrono::milliseconds infinite_timeout = std::chrono::milliseconds(-1); /**< Timeout value used to block indefinitely on message queue operations */
 };
+
+}
+
+using message_queue = api::os_message_queue<>;
+
+}
 
 #endif

@@ -1,9 +1,7 @@
 #ifndef _OSAL_MUTEX_
 #define _OSAL_MUTEX_
 
-#include "osal/osal_default_config.h"
-#include "osal/lock_guard.h"
-#include "osal/mutex.h"
-#include "osal/timed_mutex.h"
+#include "osal/os_lock_guard.h"
+#include "osal/os_mutex.h"
 
 #endif

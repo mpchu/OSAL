@@ -1,8 +1,8 @@
 #ifndef _OSAL_TASK_
 #define _OSAL_TASK_
 
-#include "osal/osal_default_config.h"
-#include "osal/task.h"
-#include "osal/this_task.h"
+#include "osal/os_task.h"
+#include "osal/os_this_task.h"
+#include "osal/os_task_attributes.h"
 
 #endif

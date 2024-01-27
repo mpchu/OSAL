@@ -19,6 +19,20 @@ namespace osal
     #define configOSAL_MAXIMUM_QUEUE_NAME_SIZE 64
 #endif
 
+#ifndef configOSAL_MAXIMUM_TASK_PRIORITY
+    #define configOSAL_MAXIMUM_TASK_PRIORITY 0x7FFFFFFF
+#endif
+
+#if defined(WIN32) || defined(__linux__)
+#endif
+
+#ifndef configOSAL_SEMAPHORE_NATIVE_HANDLE
+    #if __cplusplus >= 202002L
+        #include <semaphore>
+        #define configOSAL_SEMAPHORE_NATIVE_HANDLE std::counting_semaphore::native_handle_type
+    #endif
+#endif
+
 }
 
 #endif
