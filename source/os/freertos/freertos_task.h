@@ -32,11 +32,11 @@ public:
     {
         _task_definition = [func, args...]() { func(args...); };
 
-        BaseType_t success = xTaskCreate(&task_function_adapter,
+        BaseType_t success = xTaskCreate(&task_entry_point,
                                          _attributes.name(),
                                          _attributes.stack_size() / sizeof(configSTACK_DEPTH_TYPE),
                                          static_cast<void*>(this),
-                                         convert_task_priority(_attributes.priority()),
+                                         translate_priority(_attributes.priority()),
                                          &_handle);
         if (!success)
         {
@@ -58,7 +58,7 @@ public:
 private:
     void run() { _task_definition(); }
 
-    static UBaseType_t convert_task_priority(int priority)
+    static UBaseType_t translate_priority(int priority)
     {
         constexpr BaseType_t numPriorities = configMAX_PRIORITIES;
         constexpr uint64_t priorityBucketSize = configOSAL_MAXIMUM_TASK_PRIORITY / numPriorities;
@@ -66,7 +66,7 @@ private:
         return tskIDLE_PRIORITY + rtosPriority;
     }
 
-    static void task_function_adapter(void *const task_object)
+    static void task_entry_point(void *const task_object)
     {
         freertos_task *myself = static_cast<freertos_task *>(task_object);
         myself->run();
