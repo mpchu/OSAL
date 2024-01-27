@@ -39,10 +39,10 @@ public:
     constexpr std::size_t maximum() noexcept { return _max_count; }
 };
 
-}
+} // namespace api
 
 using counting_semaphore = api::os_counting_semaphore<>;
 
-}
+} // namespace osal
 
 #endif

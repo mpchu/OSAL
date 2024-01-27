@@ -48,7 +48,7 @@ public:
      * @brief Returns the underlying operating system queue handle for this message queue.
      * @return Native OS queue handle
      */
-    os_message_queue::native_handle_type native_handle() { return _handle; }
+    native_handle_type native_handle() { return _handle; }
 
     /**
      * @brief Sends data through the message queue.
@@ -109,10 +109,10 @@ public:
     static constexpr std::chrono::milliseconds infinite_timeout = std::chrono::milliseconds(-1); /**< Timeout value used to block indefinitely on message queue operations */
 };
 
-}
+} // namespace api
 
 using message_queue = api::os_message_queue<>;
 
-}
+} // namespace osal
 
 #endif

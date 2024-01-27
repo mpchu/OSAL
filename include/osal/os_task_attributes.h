@@ -43,6 +43,6 @@ public:
     int priority()           { return _priority; }
 };
 
-}
+} // namespace osal
 
 #endif

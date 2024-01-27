@@ -37,10 +37,10 @@ public:
     constexpr std::size_t maximum() noexcept { return 1; }
 };
 
-}
+} // namespace api
 
 using binary_semaphore = api::os_binary_semaphore<>;
 
-}
+} // namespace osal
 
 #endif

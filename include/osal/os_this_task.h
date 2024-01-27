@@ -13,8 +13,8 @@ void yield() noexcept;
 
 void sleep_for(const std::chrono::milliseconds &sleep_duration);
 
-}
+} // namespace this_task
 
-}
+} // namespace osal
 
 #endif

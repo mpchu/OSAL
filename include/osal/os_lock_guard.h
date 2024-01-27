@@ -31,6 +31,6 @@ public:
     lock_guard(const osal::lock_guard<Lockable> &rhs) = delete;
 };
 
-}
+} // namespace osal
 
 #endif

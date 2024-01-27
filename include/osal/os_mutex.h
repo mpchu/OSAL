@@ -22,7 +22,7 @@ public:
 
     ~os_mutex();
 
-    os_mutex::native_handle_type native_handle() { return _handle; }
+    native_handle_type native_handle() { return _handle; }
 
     void lock();
 
@@ -33,7 +33,7 @@ public:
     void unlock();
 };
 
-}
+} // namespace api
 
 using mutex = api::os_mutex<>;
 
