@@ -5,6 +5,9 @@
 namespace osal
 {
 
+namespace this_task
+{
+
 void yield() noexcept
 {
     taskYIELD();
@@ -13,6 +16,8 @@ void yield() noexcept
 void sleep_for(const std::chrono::milliseconds &sleep_duration)
 {
     vTaskDelay(pdMS_TO_TICKS(sleep_duration.count()));
+}
+
 }
 
 }
