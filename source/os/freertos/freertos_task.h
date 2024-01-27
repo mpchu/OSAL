@@ -28,7 +28,7 @@ public:
     using native_handle_type = TaskHandle_t;
 
     template<class Function, class... Args>
-    freertos_task(task_attributes &&attr, Function &&func, Args &&... args) : _attributes(attr)
+    explicit freertos_task(task_attributes attr, Function &&func, Args &&... args) : _attributes(attr)
     {
         _task_definition = [func, args...]() { func(args...); };
 
@@ -36,7 +36,7 @@ public:
                                          _attributes.name(),
                                          _attributes.stack_size() / sizeof(configSTACK_DEPTH_TYPE),
                                          static_cast<void*>(this),
-                                         convert_task_priority(_attributes.priority),
+                                         convert_task_priority(_attributes.priority()),
                                          &_handle);
         if (!success)
         {
@@ -55,14 +55,14 @@ public:
 
     task_attributes attributes() { return _attributes; }
 
+private:
     void run() { _task_definition(); }
 
-private:
     static UBaseType_t convert_task_priority(int priority)
     {
-        BaseType_t numPriorities = configMAX_PRIORITIES;
-        uint64_t rtosPriority = (static_cast<uint64_t>(priority) * numPriorities) /
-                                configOSAL_MAXIMUM_TASK_PRIORITY;
+        constexpr BaseType_t numPriorities = configMAX_PRIORITIES;
+        constexpr uint64_t priorityBucketSize = configOSAL_MAXIMUM_TASK_PRIORITY / numPriorities;
+        BaseType_t rtosPriority = priority / priorityBucketSize;
         return tskIDLE_PRIORITY + rtosPriority;
     }
 

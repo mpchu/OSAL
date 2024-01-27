@@ -21,8 +21,8 @@ public:
     using native_handle_type = configOSAL_TASK_NATIVE_HANDLE;
 
     template<class Function, class... Args>
-    explicit os_task(task_attributes &&attr, Function &&func, Args &&... args)
-        : _implementation(std::forward(attr), std::forward(func), std::forward(args...))
+    explicit os_task(task_attributes attr, Function &&func, Args &&... args)
+        : _implementation(std::forward<task_attributes>(attr), std::forward<Function>(func), std::forward<Args>(args)...)
     {
     }
 
@@ -37,10 +37,10 @@ public:
     task_attributes attributes() { return _implementation.attributes(); }
 };
 
-}
+} // namespace api
 
 using task = api::os_task<>;
 
-}
+} // namespace osal
 
 #endif
