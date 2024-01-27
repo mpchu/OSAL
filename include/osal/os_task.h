@@ -24,6 +24,13 @@ class os_task
 public:
     using native_handle_type = configOSAL_TASK_NATIVE_HANDLE;
 
+    template<class Function>
+    explicit os_task(task_attributes attr, Function &&func)
+        : _implementation(std::forward<task_attributes>(attr),
+                          std::forward<Function>(func))
+    {
+    }
+
     template<class Function, class... Args>
     explicit os_task(task_attributes attr, Function &&func, Args &&... args)
         : _implementation(std::forward<task_attributes>(attr),
