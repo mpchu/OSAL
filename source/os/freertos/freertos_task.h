@@ -3,7 +3,6 @@
 
 #include <functional>
 
-#include "osal/osal_config.h"
 #include "osal/os_task_attributes.h"
 
 #include "FreeRTOS.h"
@@ -16,6 +15,9 @@ namespace osal
 namespace details
 {
 
+/**
+ * @brief Implementation class for a FreeRTOS task
+ */
 class freertos_task
 {
     task_attributes _attributes;
@@ -27,50 +29,20 @@ class freertos_task
 public:
     using native_handle_type = TaskHandle_t;
 
-    explicit freertos_task(task_attributes attr, std::function<void()> &&task_definition)
-        : _attributes(attr),
-          _handle(nullptr),
-          _task_definition(std::forward<std::function<void()>>(task_definition))
-    {
-        BaseType_t success = xTaskCreate(&task_entry_point,
-                                         _attributes.name(),
-                                         _attributes.stack_size() / sizeof(configSTACK_DEPTH_TYPE),
-                                         static_cast<void*>(this),
-                                         translate_priority(_attributes.priority()),
-                                         &_handle);
-        if (!success)
-        {
-            configASSERT(!"Task Constructor Failed");
-        }
-    }
+    explicit freertos_task(task_attributes attr, std::function<void()> &&task_definition);
 
-    ~freertos_task()
-    {
-#if INCLUDE_vTaskDelayUntil == 1
-        vTaskDelete(_handle);
-#endif
-    }
+    ~freertos_task();
 
-    native_handle_type native_handle() { return _handle; }
+    native_handle_type native_handle();
 
-    task_attributes attributes() { return _attributes; }
+    task_attributes attributes();
 
 private:
-    void run() { _task_definition(); }
+    void run();
 
-    static UBaseType_t translate_priority(int priority)
-    {
-        constexpr BaseType_t numPriorities = configMAX_PRIORITIES;
-        constexpr uint64_t priorityBucketSize = configOSAL_MAXIMUM_TASK_PRIORITY / numPriorities;
-        BaseType_t rtosPriority = priority / priorityBucketSize;
-        return tskIDLE_PRIORITY + rtosPriority;
-    }
+    static UBaseType_t translate_priority(int priority);
 
-    static void task_entry_point(void *const task_object)
-    {
-        freertos_task *myself = static_cast<freertos_task *>(task_object);
-        myself->run();
-    }
+    static void task_entry_point(void *const task_object);
 };
 
 } // namespace details
