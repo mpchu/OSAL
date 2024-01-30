@@ -2,7 +2,6 @@
 #define _OSAL_OS_FREERTOS_FREERTOS_TASK_H_
 
 #include <functional>
-#include <type_traits>
 
 #include "osal/osal_config.h"
 #include "osal/os_task_attributes.h"
@@ -74,8 +73,8 @@ private:
     }
 };
 
-}
+} // namespace details
 
-}
+} // namespace osal
 
 #endif

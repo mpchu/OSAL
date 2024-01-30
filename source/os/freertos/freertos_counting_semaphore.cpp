@@ -5,10 +5,12 @@
 namespace osal
 {
 
+using freertos_counting_semaphore = details::os_counting_semaphore<SemaphoreHandle_t>;
+
 template<>
-counting_semaphore::os_counting_semaphore(std::size_t max_count, std::size_t initial)
+freertos_counting_semaphore::os_counting_semaphore(std::size_t max_count, std::size_t initial) : _max_count(max_count)
 {
-    _handle = xSemaphoreCreateBinary();
+    _handle = xSemaphoreCreateCounting(_max_count, initial);
     if (_handle == nullptr)
     {
         configASSERT(!"Binary Semaphore Constructor Failed");
@@ -16,13 +18,13 @@ counting_semaphore::os_counting_semaphore(std::size_t max_count, std::size_t ini
 }
 
 template<>
-counting_semaphore::~os_counting_semaphore()
+freertos_counting_semaphore::~os_counting_semaphore()
 {
     vSemaphoreDelete(_handle);
 }
 
 template<>
-void counting_semaphore::release(std::size_t update)
+void freertos_counting_semaphore::release(std::size_t update)
 {
     for (std::size_t i = 0; i < update; ++i)
     {
@@ -31,26 +33,26 @@ void counting_semaphore::release(std::size_t update)
 }
 
 template<>
-void counting_semaphore::acquire()
+void freertos_counting_semaphore::acquire()
 {
     xSemaphoreTake(_handle, portMAX_DELAY);
 }
 
 template<>
-bool counting_semaphore::try_acquire()
+bool freertos_counting_semaphore::try_acquire()
 {
     BaseType_t success = xSemaphoreTake(_handle, 0);
     return (success == pdTRUE) ? true : false;
 }
 
 template<>
-bool counting_semaphore::try_acquire_for(const std::chrono::milliseconds &timeout)
+bool freertos_counting_semaphore::try_acquire_for(const std::chrono::milliseconds &timeout)
 {
     BaseType_t success = xSemaphoreTake(_handle, timeout.count());
     return (success == pdTRUE) ? true : false;
 }
 
-}
+} // namespace osal
 
 // Instantiate the template specialization for this OS
-template osal::counting_semaphore;
+template osal::freertos_counting_semaphore;

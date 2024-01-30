@@ -5,8 +5,10 @@
 namespace osal
 {
 
+using freertos_binary_semaphore = details::os_binary_semaphore<SemaphoreHandle_t>;
+
 template<>
-binary_semaphore::os_binary_semaphore(bool desired)
+freertos_binary_semaphore::os_binary_semaphore(bool desired)
 {
     _handle = xSemaphoreCreateBinary();
     if (_handle == nullptr)
@@ -21,38 +23,38 @@ binary_semaphore::os_binary_semaphore(bool desired)
 }
 
 template<>
-binary_semaphore::~os_binary_semaphore()
+freertos_binary_semaphore::~os_binary_semaphore()
 {
     vSemaphoreDelete(_handle);
 }
 
 template<>
-void binary_semaphore::release()
+void freertos_binary_semaphore::release()
 {
     xSemaphoreGive(_handle);
 }
 
 template<>
-void binary_semaphore::acquire()
+void freertos_binary_semaphore::acquire()
 {
     xSemaphoreTake(_handle, portMAX_DELAY);
 }
 
 template<>
-bool binary_semaphore::try_acquire()
+bool freertos_binary_semaphore::try_acquire()
 {
     BaseType_t success = xSemaphoreTake(_handle, 0);
     return (success == pdTRUE) ? true : false;
 }
 
 template<>
-bool binary_semaphore::try_acquire_for(const std::chrono::milliseconds &timeout)
+bool freertos_binary_semaphore::try_acquire_for(const std::chrono::milliseconds &timeout)
 {
     BaseType_t success = xSemaphoreTake(_handle, timeout.count());
     return (success == pdTRUE) ? true : false;
 }
 
-}
+} // namespace osal
 
 // Instantiate the template specialization for this OS
-template osal::binary_semaphore;
+template osal::freertos_binary_semaphore;

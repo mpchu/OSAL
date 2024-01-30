@@ -11,7 +11,7 @@
 namespace osal
 {
 
-namespace api
+namespace details
 {
 
 template <class task_impl = configOSAL_TASK_IMPLEMENTATION>
@@ -67,9 +67,9 @@ private:
 
 };
 
-} // namespace api
+} // namespace details
 
-using task = api::os_task<>;
+using task = details::os_task<>;
 
 } // namespace osal
 

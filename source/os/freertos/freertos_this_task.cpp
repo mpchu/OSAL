@@ -18,6 +18,6 @@ void sleep_for(const std::chrono::milliseconds &sleep_duration)
     vTaskDelay(pdMS_TO_TICKS(sleep_duration.count()));
 }
 
-}
+} // namespace details
 
-}
+} // namespace osal

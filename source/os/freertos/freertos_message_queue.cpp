@@ -6,8 +6,10 @@
 namespace osal
 {
 
+using freertos_message_queue = details::os_message_queue<QueueHandle_t>;
+
 template<>
-message_queue::os_message_queue(osal::string_view name, std::size_t item_size, std::size_t depth)
+freertos_message_queue::os_message_queue(osal::string_view name, std::size_t item_size, std::size_t depth)
     : _item_size(item_size),
       _max_num_items(depth)
 {
@@ -22,13 +24,13 @@ message_queue::os_message_queue(osal::string_view name, std::size_t item_size, s
 }
 
 template<>
-message_queue::~os_message_queue()
+freertos_message_queue::~os_message_queue()
 {
     vQueueDelete(_handle);
 }
 
 template<>
-int message_queue::send(const void *data,
+int freertos_message_queue::send(const void *data,
                         std::size_t num_bytes,
                         const std::chrono::milliseconds &timeout)
 {
@@ -40,7 +42,7 @@ int message_queue::send(const void *data,
 }
 
 template<>
-int message_queue::receive(void *buffer,
+int freertos_message_queue::receive(void *buffer,
                            std::size_t buffer_size,
                            const std::chrono::milliseconds &timeout)
 {
@@ -64,18 +66,18 @@ int message_queue::receive(void *buffer,
 }
 
 template<>
-bool message_queue::try_send(const void *data, std::size_t num_bytes)
+bool freertos_message_queue::try_send(const void *data, std::size_t num_bytes)
 {
     return send(data, num_bytes, std::chrono::milliseconds(0)) == 0;
 }
 
 template<>
-bool message_queue::try_receive(void *buffer, std::size_t buffer_size)
+bool freertos_message_queue::try_receive(void *buffer, std::size_t buffer_size)
 {
     return receive(buffer, buffer_size, std::chrono::milliseconds(0)) == 0;
 }
 
-}
+} // namespace osal
 
 // Instantiate the template specialization for this OS
-template osal::message_queue;
+template osal::freertos_message_queue;

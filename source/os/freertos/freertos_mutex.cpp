@@ -5,8 +5,10 @@
 namespace osal
 {
 
+using freertos_mutex = details::os_mutex<SemaphoreHandle_t>;
+
 template<>
-mutex::os_mutex()
+freertos_mutex::os_mutex()
 {
     _handle = xSemaphoreCreateMutex();
     if (_handle == nullptr)
@@ -16,38 +18,38 @@ mutex::os_mutex()
 }
 
 template<>
-mutex::~os_mutex()
+freertos_mutex::~os_mutex()
 {
     vSemaphoreDelete(_handle);
 }
 
 template<>
-void mutex::lock()
+void freertos_mutex::lock()
 {
     xSemaphoreTake(_handle, portMAX_DELAY);
 }
 
 template<>
-bool mutex::try_lock()
+bool freertos_mutex::try_lock()
 {
     BaseType_t success = xSemaphoreTake(_handle, 0);
     return (success == pdTRUE) ? true : false;
 }
 
 template<>
-bool mutex::try_lock_for(const std::chrono::milliseconds &timeout)
+bool freertos_mutex::try_lock_for(const std::chrono::milliseconds &timeout)
 {
     BaseType_t success = xSemaphoreTake(_handle, pdMS_TO_TICKS(timeout.count()));
     return (success == pdTRUE) ? true : false;
 }
 
 template<>
-void mutex::unlock()
+void freertos_mutex::unlock()
 {
     xSemaphoreGive(_handle);
 }
 
-}
+} // namespace osal
 
 // Instantiate the template specialization for this OS
-template osal::mutex;
+template osal::freertos_mutex;

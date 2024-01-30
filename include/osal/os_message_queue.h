@@ -8,7 +8,7 @@
 namespace osal
 {
 
-namespace api
+namespace details
 {
 
 /**
@@ -90,7 +90,7 @@ public:
 
     /**
      * @brief Returns the size of each item in the queue.
-     * @return Size of each item in the queue
+     * @return Size of each item in the queue in bytes
      */
     std::size_t item_size() { return _item_size; }
 
@@ -109,9 +109,9 @@ public:
     static constexpr std::chrono::milliseconds infinite_timeout = std::chrono::milliseconds(-1); /**< Timeout value used to block indefinitely on message queue operations */
 };
 
-} // namespace api
+} // namespace details
 
-using message_queue = api::os_message_queue<>;
+using message_queue = details::os_message_queue<>;
 
 } // namespace osal
 

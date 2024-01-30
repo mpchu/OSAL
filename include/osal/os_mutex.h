@@ -7,7 +7,7 @@
 namespace osal
 {
 
-namespace api
+namespace details
 {
 
 template <typename handle_t = configOSAL_MUTEX_NATIVE_HANDLE>
@@ -33,9 +33,9 @@ public:
     void unlock();
 };
 
-} // namespace api
+} // namespace details
 
-using mutex = api::os_mutex<>;
+using mutex = details::os_mutex<>;
 
 } // namespace osal
 

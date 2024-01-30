@@ -7,7 +7,7 @@
 namespace osal
 {
 
-namespace api
+namespace details
 {
 
 template <typename handle_t = configOSAL_SEMAPHORE_NATIVE_HANDLE>
@@ -37,9 +37,9 @@ public:
     constexpr std::size_t maximum() noexcept { return 1; }
 };
 
-} // namespace api
+} // namespace details
 
-using binary_semaphore = api::os_binary_semaphore<>;
+using binary_semaphore = details::os_binary_semaphore<>;
 
 } // namespace osal
 
