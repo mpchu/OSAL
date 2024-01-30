@@ -2,7 +2,7 @@
 #define _OSAL_TASK_
 
 #include "osal/os_task.h"
-#include "osal/os_this_task.h"
 #include "osal/os_task_attributes.h"
+#include "osal/os_this_task.h"
 
 #endif
