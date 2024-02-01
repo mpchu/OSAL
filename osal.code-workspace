@@ -82,7 +82,9 @@
             "thread": "cpp",
             "unordered_map": "cpp",
             "xhash": "cpp",
-            "mutex": "cpp"
+            "mutex": "cpp",
+            "message_queue": "cpp",
+            "task": "cpp"
         }
     }
 }
