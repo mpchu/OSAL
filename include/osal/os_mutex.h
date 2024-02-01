@@ -28,9 +28,16 @@ public:
 
     bool try_lock();
 
-    bool try_lock_for(const std::chrono::milliseconds &timeout);
+    template<class Rep, class Period>
+    bool try_lock_for(const std::chrono::duration<Rep, Period> &timeout)
+    {
+        return impl_try_lock_for(std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+    }
 
     void unlock();
+
+private:
+    bool impl_try_lock_for(const std::chrono::nanoseconds &timeout);
 };
 
 } // namespace details

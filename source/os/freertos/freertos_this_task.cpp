@@ -13,11 +13,18 @@ void yield() noexcept
     taskYIELD();
 }
 
-void sleep_for(const std::chrono::milliseconds &sleep_duration)
+namespace details
 {
-    vTaskDelay(pdMS_TO_TICKS(sleep_duration.count()));
+
+void os_sleep_for(const std::chrono::nanoseconds &sleep_duration)
+{
+    vTaskDelay(
+        pdMS_TO_TICKS(
+            std::chrono::duration_cast<std::chrono::milliseconds>(sleep_duration).count()));
 }
 
 } // namespace details
+
+} // namespace this_task
 
 } // namespace osal

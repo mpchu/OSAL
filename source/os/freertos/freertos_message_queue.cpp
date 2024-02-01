@@ -30,21 +30,22 @@ freertos_message_queue::~os_message_queue()
 }
 
 template<>
-int freertos_message_queue::send(const void *data,
-                        std::size_t num_bytes,
-                        const std::chrono::milliseconds &timeout)
+int freertos_message_queue::impl_send(const void *data,
+                                      std::size_t num_bytes,
+                                      const std::chrono::nanoseconds &timeout)
 {
     TickType_t ticks = (timeout == infinite_timeout)
                        ? portMAX_DELAY
-                       : pdMS_TO_TICKS(timeout.count());
+                       : pdMS_TO_TICKS(
+                           std::chrono::duration_cast<std::chrono::milliseconds>(timeout).count());
     BaseType_t rtosCode = xQueueSendToBack(_handle, data, ticks);
     return (rtosCode == pdTRUE) ? 0 : -1;
 }
 
 template<>
-int freertos_message_queue::receive(void *buffer,
-                           std::size_t buffer_size,
-                           const std::chrono::milliseconds &timeout)
+int freertos_message_queue::impl_receive(void *buffer,
+                                         std::size_t buffer_size,
+                                         const std::chrono::nanoseconds &timeout)
 {
     int status = 0;
     if (buffer_size < _item_size)
@@ -55,7 +56,8 @@ int freertos_message_queue::receive(void *buffer,
     {
         TickType_t ticks = (timeout == infinite_timeout)
                            ? portMAX_DELAY
-                           : pdMS_TO_TICKS(timeout.count());
+                           : pdMS_TO_TICKS(
+                               std::chrono::duration_cast<std::chrono::milliseconds>(timeout).count());
         BaseType_t rtosCode = xQueueReceive(_handle, buffer, ticks);
         if (rtosCode != pdTRUE)
         {
@@ -63,18 +65,6 @@ int freertos_message_queue::receive(void *buffer,
         }
     }
     return status;
-}
-
-template<>
-bool freertos_message_queue::try_send(const void *data, std::size_t num_bytes)
-{
-    return send(data, num_bytes, std::chrono::milliseconds(0)) == 0;
-}
-
-template<>
-bool freertos_message_queue::try_receive(void *buffer, std::size_t buffer_size)
-{
-    return receive(buffer, buffer_size, std::chrono::milliseconds(0)) == 0;
 }
 
 } // namespace osal

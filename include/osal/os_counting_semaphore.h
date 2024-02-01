@@ -34,9 +34,16 @@ public:
 
     bool try_acquire();
 
-    bool try_acquire_for(const std::chrono::milliseconds &timeout);
+    template <class Rep, class Period>
+    bool try_acquire_for(const std::chrono::duration<Rep, Period> &timeout)
+    {
+        return impl_try_acquire_for(const std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+    }
 
     constexpr std::size_t maximum() noexcept { return _max_count; }
+
+private:
+    bool impl_try_acquire_for(const std::chrono::nanoseconds &timeout);
 };
 
 } // namespace details

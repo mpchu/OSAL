@@ -51,26 +51,66 @@ public:
     native_handle_type native_handle() { return _handle; }
 
     /**
-     * @brief Sends data through the message queue.
+     * @brief Sends data through the message queue. If the message queue is full,
+     *        then this method indefinitely blocks until it can send.
+     * @param[in] data Buffer containing data to be sent
+     * @param[in] num_bytes Number of bytes to send
+     * @return 0 on success, error codes otherwise
+     */
+    int send(const void *data, std::size_t num_bytes)
+    {
+        return impl_send(data, num_bytes, infinite_timeout) == 0;
+    }
+
+    /**
+     * @brief Receives data from the message queue. If the message queue does not have data,
+     *        then this method indefinitely blocks until there is data to receive.
+     * @param[out] buffer Buffer to store data received from the message queue
+     * @param[in] buffer_size Size of receive buffer in bytes
+     * @return 0 on success, error codes otherwise 
+     */
+    int receive(void *buffer, std::size_t buffer_size)
+    {
+        return impl_receive(buffer, buffer_size, infinite_timeout) == 0;
+    }
+
+    /**
+     * @brief Sends data through the message queue. Returns if unable to send data through
+     *        the message queue for the specified timeout duration.
      * @param[in] data Buffer containing data to be sent
      * @param[in] num_bytes Number of bytes to send
      * @param[in] timeout Maximum amount of time to attempt sending data
      * @return 0 on success, error codes otherwise
      */
+    template <class Rep, class Period>
     int send(const void *data,
              std::size_t num_bytes,
-             const std::chrono::milliseconds &timeout = infinite_timeout);
+             const std::chrono::duration<Rep, Period> &timeout)
+    {
+        return impl_send(
+            data,
+            num_bytes,
+            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout)) == 0;
+    }
 
     /**
-     * @brief Receives data from the message queue.
+     * @brief Receives data from the message queue. Returns if unable to receive data from
+     *        the message queue for the specified timeout duration.
      * @param[out] buffer Buffer to store data received from the message queue
      * @param[in] buffer_size Size of receive buffer in bytes
      * @param[in] timeout Maximum amount of time to attempt receiving data
      * @return 0 on success, error codes otherwise 
      */
+    template <class Rep, class Period>
     int receive(void *buffer,
                 std::size_t buffer_size,
-                const std::chrono::milliseconds &timeout = infinite_timeout);
+                const std::chrono::duration<Rep, Period> &timeout)
+    {
+        return impl_receive(
+            buffer,
+            buffer_size,
+            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout)) == 0;
+    }
 
     /**
      * @brief Attempts to send data through the message queue without blocking.
@@ -78,7 +118,10 @@ public:
      * @param[in] num_bytes Number of bytes to send
      * @return True on successful send, false otherwise
      */
-    bool try_send(const void *data, std::size_t num_bytes);
+    bool try_send(const void *data, std::size_t num_bytes)
+    {
+        return impl_send(data, num_bytes, std::chrono::nanoseconds(0)) == 0;
+    }
 
     /**
      * @brief Attempts to receive data from the message queue without blocking.
@@ -86,7 +129,10 @@ public:
      * @param[in] buffer_size Size of receive buffer in bytes
      * @return True on successful receive, false otherwise
      */
-    bool try_receive(void *buffer, std::size_t buffer_size);
+    bool try_receive(void *buffer, std::size_t buffer_size)
+    {
+        return impl_receive(buffer, buffer_size, std::chrono::nanoseconds(0)) == 0;
+    }
 
     /**
      * @brief Returns the size of each item in the queue.
@@ -106,7 +152,30 @@ public:
      */
     osal::string_view name() { return _name; }
 
-    static constexpr std::chrono::milliseconds infinite_timeout = std::chrono::milliseconds(-1); /**< Timeout value used to block indefinitely on message queue operations */
+private:
+    static constexpr std::chrono::nanoseconds infinite_timeout = std::chrono::nanoseconds(-1); /**< Timeout value used to block indefinitely on message queue operations */
+
+    /**
+     * @brief OS-specific implementation for sending data through the message queue.
+     * @param[in] data Buffer containing data to be sent
+     * @param[in] num_bytes Number of bytes to send
+     * @param[in] timeout Maximum amount of time to attempt sending data, if -1 then blocks indefinitely
+     * @return 0 on success, error codes otherwise 
+     */
+    int impl_send(const void *data,
+                  std::size_t num_bytes,
+                  const std::chrono::nanoseconds &timeout = infinite_timeout);
+
+    /**
+     * @brief OS-specific implementation for receiving data from the message queue.
+     * @param[out] buffer Buffer to store data received from the message queue
+     * @param[in] buffer_size Size of receive buffer in bytes
+     * @param[in] timeout Maximum amount of time to attempt receiving data, if -1 then blocks indefinitely
+     * @return 0 on success, error codes otherwise 
+     */
+    int impl_receive(void *buffer,
+                     std::size_t buffer_size,
+                     const std::chrono::nanoseconds &timeout = infinite_timeout);
 };
 
 } // namespace details

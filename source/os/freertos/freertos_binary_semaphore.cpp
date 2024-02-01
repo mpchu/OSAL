@@ -48,9 +48,12 @@ bool freertos_binary_semaphore::try_acquire()
 }
 
 template<>
-bool freertos_binary_semaphore::try_acquire_for(const std::chrono::milliseconds &timeout)
+bool freertos_binary_semaphore::impl_try_acquire_for(const std::chrono::nanoseconds &timeout)
 {
-    BaseType_t success = xSemaphoreTake(_handle, timeout.count());
+    BaseType_t success = xSemaphoreTake(
+        _handle, 
+        pdMS_TO_TICKS(
+            std::chrono::duration_cast<std::chrono::milliseconds>(timeout).count()));
     return (success == pdTRUE) ? true : false;
 }
 
