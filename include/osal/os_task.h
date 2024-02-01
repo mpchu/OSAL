@@ -17,17 +17,21 @@ namespace details
 /**
  * @brief Public API for an operating system task object.
  * This class template declares operations and attributes common to all operating system tasks.
- * @tparam task_impl OS-specific task implementation class
+ * @tparam handle_t OS-specific task handle
  */
-template <class task_impl = configOSAL_TASK_IMPLEMENTATION>
+template <class handle_t = configOSAL_TASK_NATIVE_HANDLE>
 class os_task
 {
-    task_impl _implementation;
-
     using callable_task_fn = std::function<void()>;
 
+    task_attributes _attributes;
+
+    callable_task_fn _task_def;
+
+    handle_t _handle;
+
 public:
-    using native_handle_type = configOSAL_TASK_NATIVE_HANDLE; /**< Underlying OS task handle implementation */
+    using native_handle_type = handle_t; /**< Underlying OS task handle implementation */
 
     /**
      * @brief Creates a new task in the operating system and executes it.
@@ -35,11 +39,12 @@ public:
      * @param[in] attr Task attributes
      * @param[in] func Function to execute
      */
-    template<class Function>
+    template <class Function>
     explicit os_task(task_attributes attr, Function &&func)
-        : _implementation(std::forward<task_attributes>(attr),
-                          std::forward<Function>(func))
+        : _attributes(std::forward<task_attributes>(attr)),
+          _task_def(std::forward<Function>(func))
     {
+        create_task();
     }
 
     /**
@@ -50,17 +55,21 @@ public:
      * @param[in] func Function to execute
      * @param[in] args Arguments to be passed to func
      */
-    template<class Function, class... Args>
+    template <class Function, class... Args>
     explicit os_task(task_attributes attr, Function &&func, Args &&... args)
-        : _implementation(std::forward<task_attributes>(attr),
-                          create_callable_task(std::forward<Function>(func), std::forward<Args>(args)...))
+        : _attributes(std::forward<task_attributes>(attr)),
+          _task_def(create_callable_task(std::forward<Function>(func), std::forward<Args>(args)...))
     {
+        create_task();
     }
 
     /**
      * @brief Destroys the task and cleans up any OS resources that were in use.
      */
-    ~os_task() = default;
+    ~os_task()
+    {
+        destroy_task();
+    }
 
     os_task(const os_task &rhs) = delete;
 
@@ -70,13 +79,13 @@ public:
      * @brief Returns the underlying operating system task handle for this object.
      * @return Native OS task handle
      */
-    native_handle_type native_handle() { return _implementation.native_handle(); }
+    native_handle_type native_handle() { return _handle; }
 
     /**
      * @brief Returns the task attributes.
      * @return Task attributes 
      */
-    task_attributes attributes() { return _implementation.attributes(); }
+    task_attributes attributes() { return _attributes; }
 
 private:
     /**
@@ -87,7 +96,7 @@ private:
      * @param[in] args Arguments to be passed to func
      * @return Callable task definition function
      */
-    template<class Function, class... Args>
+    template <class Function, class... Args>
     callable_task_fn create_callable_task(Function &&func, Args &&... args)
     {
 #if __cplusplus >= 201703L
@@ -103,6 +112,15 @@ private:
 #endif
     }
 
+    template <class Return, class... Args>
+    static Return task_entry_point(Args ... args);
+
+    template <class OsPriority>
+    static OsPriority translate_priority(int priority);
+
+    void create_task();
+
+    void destroy_task();
 };
 
 } // namespace details

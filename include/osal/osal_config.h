@@ -7,13 +7,10 @@
 #include "semphr.h"
 #include "task.h"
 
-#include "os/freertos/freertos_task.h"
-
 #define configOSAL_MUTEX_NATIVE_HANDLE     SemaphoreHandle_t
 #define configOSAL_SEMAPHORE_NATIVE_HANDLE SemaphoreHandle_t
 #define configOSAL_MSG_QUEUE_NATIVE_HANDLE QueueHandle_t
-#define configOSAL_TASK_IMPLEMENTATION     osal::details::freertos_task
-#define configOSAL_TASK_NATIVE_HANDLE      osal::details::freertos_task::native_handle_type
+#define configOSAL_TASK_NATIVE_HANDLE      TaskHandle_t
 
 #include "osal/osal_default_config.h"
 
