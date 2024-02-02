@@ -1,10 +1,7 @@
 #ifndef _OSAL_INCLUDE_OSAL_DEFAULT_CONFIG_H_
 #define _OSAL_INCLUDE_OSAL_DEFAULT_CONFIG_H_
 
-namespace osal
-{
-
-using string_view = const char *;
+#include <cstdint>
 
 #ifndef configOSAL_MAXIMUM_TASK_NAME_SIZE
     #define configOSAL_MAXIMUM_TASK_NAME_SIZE 64
@@ -15,26 +12,44 @@ using string_view = const char *;
 #endif
 
 #ifndef configOSAL_MAXIMUM_TASK_PRIORITY
-    #define configOSAL_MAXIMUM_TASK_PRIORITY 0x7FFFFFFF
+    #define configOSAL_MAXIMUM_TASK_PRIORITY INT32_MAX
 #endif
 
 #if defined(_WIN32) || defined(__linux__)
-    #define configOSAL_HAS_STD_THREAD_SUPPORT 1
+    #define configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB 1
 #else
-    #define configOSAL_HAS_STD_THREAD_SUPPORT 0
+    #define configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB 0
 #endif
 
 #ifndef configOSAL_SEMAPHORE_NATIVE_HANDLE
-    #if configOSAL_HAS_STD_THREAD_SUPPORT
-        #if __cplusplus >= 202002L
-            #include <semaphore>
-            #define configOSAL_SEMAPHORE_NATIVE_HANDLE std::counting_semaphore::native_handle_type
-        #endif
+    #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
+        namespace osal::details{class std_semaphore_handle;}
+        #define configOSAL_SEMAPHORE_NATIVE_HANDLE osal::details::std_semaphore_handle*
     #else
-        #error "configOSAL_SEMAPHORE_NATIVE_HANDLE is not defined for this platform!"
+        #error "configOSAL_SEMAPHORE_NATIVE_HANDLE is not defined for this platform"
     #endif
 #endif
 
-}
+#ifndef configOSAL_MUTEX_NATIVE_HANDLE
+    #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
+        #include <mutex>
+        #define configOSAL_MUTEX_NATIVE_HANDLE std::timed_mutex*
+    #else
+        #error "configOSAL_MUTEX_NATIVE_HANDLE is not defined for this platform"
+    #endif
+#endif
+
+#ifndef configOSAL_MSG_QUEUE_NATIVE_HANDLE
+    #error "configOSAL_MSG_QUEUE_NATIVE_HANDLE is not defined for this platform"
+#endif
+
+#ifndef configOSAL_TASK_NATIVE_HANDLE
+    #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
+        #include <thread>
+        #define configOSAL_TASK_NATIVE_HANDLE std::thread*
+    #else
+        #error "configOSAL_TASK_NATIVE_HANDLE is not defined for this platform"
+    #endif
+#endif
 
 #endif
