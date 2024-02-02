@@ -1,5 +1,5 @@
-#ifndef _OSAL_TASK_ATTRIBUTES_H_
-#define _OSAL_TASK_ATTRIBUTES_H_
+#ifndef _OSAL_INCLUDE_OSAL_TASK_ATTRIBUTES_H_
+#define _OSAL_INCLUDE_OSAL_TASK_ATTRIBUTES_H_
 
 #include <cstdint>
 #include "osal/osal_config.h"

@@ -1,5 +1,5 @@
-#ifndef _OSAL_OS_MUTEX_H_
-#define _OSAL_OS_MUTEX_H_
+#ifndef _OSAL_INCLUDE_OSAL_OS_MUTEX_H_
+#define _OSAL_INCLUDE_OSAL_OS_MUTEX_H_
 
 #include <chrono>
 #include "osal/osal_config.h"

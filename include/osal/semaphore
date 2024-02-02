@@ -1,5 +1,5 @@
-#ifndef _OSAL_SEMAPHORE_H_
-#define _OSAL_SEMAPHORE_H_
+#ifndef _OSAL_INCLUDE_OSAL_SEMAPHORE_H_
+#define _OSAL_INCLUDE_OSAL_SEMAPHORE_H_
 
 #include "osal/os_binary_semaphore.h"
 #include "osal/os_counting_semaphore.h"

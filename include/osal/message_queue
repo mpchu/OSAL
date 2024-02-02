@@ -1,5 +1,5 @@
-#ifndef _OSAL_MESSAGE_QUEUE_
-#define _OSAL_MESSAGE_QUEUE_
+#ifndef _OSAL_INCLUDE_OSAL_MESSAGE_QUEUE_
+#define _OSAL_INCLUDE_OSAL_MESSAGE_QUEUE_
 
 #include "osal/os_message_queue.h"
 

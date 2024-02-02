@@ -1,5 +1,5 @@
-#ifndef _OSAL_OS_MESSAGE_QUEUE_H_
-#define _OSAL_OS_MESSAGE_QUEUE_H_
+#ifndef _OSAL_INCLUDE_OSAL_OS_MESSAGE_QUEUE_H_
+#define _OSAL_INCLUDE_OSAL_OS_MESSAGE_QUEUE_H_
 
 #include <chrono>
 #include <cstddef>

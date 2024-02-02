@@ -1,5 +1,5 @@
-#ifndef _OSAL_CONFIG_H_
-#define _OSAL_CONFIG_H_
+#ifndef _OSAL_INCLUDE_OSAL_CONFIG_H_
+#define _OSAL_INCLUDE_OSAL_CONFIG_H_
 
 #include "FreeRTOS.h"
 #include "queue.h"

@@ -1,5 +1,5 @@
-#ifndef _OSAL_OS_THIS_TASK_H_
-#define _OSAL_OS_THIS_TASK_H_
+#ifndef _OSAL_INCLUDE_OSAL_OS_THIS_TASK_H_
+#define _OSAL_INCLUDE_OSAL_OS_THIS_TASK_H_
 
 #include <chrono>
 
