@@ -59,7 +59,7 @@ public:
      */
     int send(const void *data, std::size_t num_bytes)
     {
-        return impl_send(data, num_bytes, infinite_timeout) == 0;
+        return impl_send(data, num_bytes, infinite_timeout);
     }
 
     /**
@@ -71,7 +71,7 @@ public:
      */
     int receive(void *buffer, std::size_t buffer_size)
     {
-        return impl_receive(buffer, buffer_size, infinite_timeout) == 0;
+        return impl_receive(buffer, buffer_size, infinite_timeout);
     }
 
     /**
@@ -90,7 +90,7 @@ public:
         return impl_send(
             data,
             num_bytes,
-            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout)) == 0;
+            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
     }
 
     /**
@@ -109,7 +109,7 @@ public:
         return impl_receive(
             buffer,
             buffer_size,
-            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout)) == 0;
+            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
     }
 
     /**
