@@ -153,6 +153,9 @@ public:
     osal::string_view name() { return _name; }
 
 private:
+    os_message_queue(const os_message_queue &rhs) = delete;
+    os_message_queue &operator=(const os_message_queue &rhs) = delete;
+
     static constexpr std::chrono::nanoseconds infinite_timeout = std::chrono::nanoseconds(-1); /**< Timeout value used to block indefinitely on message queue operations */
 
     /**

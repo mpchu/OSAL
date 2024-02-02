@@ -23,8 +23,6 @@ public:
 
     os_counting_semaphore(std::size_t max_count, std::size_t initial);
 
-    os_counting_semaphore(const os_counting_semaphore &rhs) = delete;
-
     ~os_counting_semaphore();
 
     native_handle_type native_handle() { return _handle; }
@@ -44,6 +42,9 @@ public:
     constexpr std::size_t maximum() noexcept { return _max_count; }
 
 private:
+    os_counting_semaphore(const os_counting_semaphore &rhs) = delete;
+    os_counting_semaphore &operator=(const os_counting_semaphore &rhs) = delete;
+
     bool impl_try_acquire_for(const std::chrono::nanoseconds &timeout);
 };
 

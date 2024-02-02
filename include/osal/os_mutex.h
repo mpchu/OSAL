@@ -37,6 +37,9 @@ public:
     void unlock();
 
 private:
+    os_mutex(const os_mutex &rhs) = delete;
+    os_mutex &operator=(const os_mutex &rhs) = delete;
+
     bool impl_try_lock_for(const std::chrono::nanoseconds &timeout);
 };
 

@@ -21,8 +21,6 @@ public:
 
     os_binary_semaphore(bool desired = true);
 
-    os_binary_semaphore(const os_binary_semaphore &rhs) = delete;
-
     ~os_binary_semaphore();
 
     native_handle_type native_handle() { return _handle; }
@@ -42,6 +40,9 @@ public:
     constexpr std::size_t maximum() noexcept { return 1; }
 
 private:
+    os_binary_semaphore(const os_binary_semaphore &rhs) = delete;
+    os_binary_semaphore &operator=(const os_binary_semaphore &rhs) = delete;
+
     bool impl_try_acquire_for(const std::chrono::nanoseconds &timeout);
 };
 

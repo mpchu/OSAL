@@ -71,10 +71,6 @@ public:
         destroy_task();
     }
 
-    os_task(const os_task &rhs) = delete;
-
-    os_task(os_task &&rhs) = default;
-
     /**
      * @brief Returns the underlying operating system task handle for this object.
      * @return Native OS task handle
@@ -88,6 +84,9 @@ public:
     task_attributes attributes() { return _attributes; }
 
 private:
+    os_task(const os_task &rhs) = delete;
+    os_task &operator=(const os_task &rhs) = delete;
+
     /**
      * @brief Binds a parameter pack to a function to create a callable task definition object.
      * @tparam Function Function to be executed by the task
