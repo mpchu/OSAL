@@ -37,7 +37,7 @@ public:
      * @param[in] item_size Size of a single item in the queue
      * @param[in] depth The maximum number of items that can be stored in the queue
      */
-    os_message_queue(osal::string_view name, std::size_t item_size, std::size_t depth);
+    os_message_queue(const char *name, std::size_t item_size, std::size_t depth);
 
     /**
      * @brief Destroys the IPC message queue and cleans up any OS resources that were in use.
@@ -150,7 +150,7 @@ public:
      * @brief Returns the name of the IPC message queue.
      * @return Name of the IPC message queue
      */
-    osal::string_view name() { return _name; }
+    const char *name() { return _name; }
 
 private:
     os_message_queue(const os_message_queue &rhs) = delete;

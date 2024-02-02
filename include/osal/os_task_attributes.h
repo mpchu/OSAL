@@ -1,9 +1,9 @@
 #ifndef _OSAL_INCLUDE_OSAL_TASK_ATTRIBUTES_H_
 #define _OSAL_INCLUDE_OSAL_TASK_ATTRIBUTES_H_
 
-#include <cstdint>
+#include <cstddef>
+#include <cstring>
 #include "osal/osal_config.h"
-#include "osal/osal_default_config.h"
 
 namespace osal
 {
@@ -19,7 +19,7 @@ public:
     task_attributes() : _stack_size(0), _priority(0) { std::memset(_name, '\0', sizeof(_name)); }
     ~task_attributes() = default;
 
-    task_attributes &set_name(osal::string_view name)
+    task_attributes &set_name(const char *name)
     {
         std::memset(_name, '\0', sizeof(_name));
         std::strncpy(_name, name, sizeof(_name) - 1);
@@ -38,7 +38,7 @@ public:
         return *this;
     }
 
-    osal::string_view name() { return _name; }
+    const char *name()       { return _name; }
     std::size_t stack_size() { return _stack_size; }
     int priority()           { return _priority; }
 };
