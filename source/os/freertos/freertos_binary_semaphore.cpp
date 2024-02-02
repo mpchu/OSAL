@@ -18,7 +18,7 @@ freertos_binary_semaphore::os_binary_semaphore(bool desired)
 
     if (!desired)
     {
-        release();
+        acquire();
     }
 }
 

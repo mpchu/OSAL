@@ -19,7 +19,7 @@ class os_binary_semaphore
 public:
     using native_handle_type = handle_t;
 
-    os_binary_semaphore(bool desired = false);
+    os_binary_semaphore(bool desired = true);
 
     os_binary_semaphore(const os_binary_semaphore &rhs) = delete;
 
