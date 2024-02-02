@@ -20,7 +20,7 @@ void yield() noexcept;
  * @tparam Period A rational fraction representing the unit period in seconds
  * @param[in] sleep_duration Duration to sleep for
  */
-template<class Rep, class Period>
+template <class Rep, class Period>
 void sleep_for(const std::chrono::duration<Rep, Period> &sleep_duration)
 {
     details::os_sleep_for(std::chrono::duration_cast<std::chrono::nanoseconds>(sleep_duration));
@@ -29,7 +29,7 @@ void sleep_for(const std::chrono::duration<Rep, Period> &sleep_duration)
 namespace details
 {
 
-void os_sleep_for(const std::chrono::nanoseconds& sleep_duration);
+void os_sleep_for(const std::chrono::nanoseconds &sleep_duration);
 
 } // namespace details
 

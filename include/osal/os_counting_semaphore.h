@@ -1,6 +1,7 @@
 #ifndef _OSAL_OS_COUNTING_SEMAPHORE_H_
 #define _OSAL_OS_COUNTING_SEMAPHORE_H_
 
+#include <chrono>
 #include <cstddef>
 #include "osal/osal_config.h"
 

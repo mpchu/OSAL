@@ -1,7 +1,6 @@
 #ifndef _OSAL_CONFIG_H_
 #define _OSAL_CONFIG_H_
 
-#include <thread>
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "semphr.h"

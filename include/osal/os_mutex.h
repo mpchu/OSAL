@@ -28,7 +28,7 @@ public:
 
     bool try_lock();
 
-    template<class Rep, class Period>
+    template <class Rep, class Period>
     bool try_lock_for(const std::chrono::duration<Rep, Period> &timeout)
     {
         return impl_try_lock_for(std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
