@@ -23,7 +23,7 @@
 
 #ifndef configOSAL_SEMAPHORE_NATIVE_HANDLE
     #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
-        namespace osal::details{class std_semaphore_handle;}
+        namespace osal{namespace details{class std_semaphore_handle;}}
         #define configOSAL_SEMAPHORE_NATIVE_HANDLE osal::details::std_semaphore_handle*
     #else
         #error "configOSAL_SEMAPHORE_NATIVE_HANDLE is not defined for this platform"

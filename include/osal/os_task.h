@@ -34,11 +34,6 @@ public:
     using native_handle_type = handle_t; /**< Underlying OS task handle implementation */
 
     /**
-     * @brief Creates a new task object which does not represent a task.
-     */
-    os_task() noexcept {}
-
-    /**
      * @brief Creates a new task in the operating system and executes it.
      * @tparam Function Function to be executed by the task
      * @param[in] attr Task attributes
@@ -76,10 +71,6 @@ public:
         destroy_task();
     }
 
-    // Move semantics
-    os_task(os_task &&rhs) = default;
-    os_task &operator=(os_task &&rhs) = default;
-
     /**
      * @brief Returns the underlying operating system task handle for this object.
      * @return Native OS task handle
@@ -93,8 +84,9 @@ public:
     task_attributes attributes() { return _attributes; }
 
 private:
+    // Delete copy & move
     os_task(const os_task &rhs) = delete;
-    os_task &operator=(const os_task &rhs) = delete;
+    os_task(os_task &&rhs) = delete;
 
     /**
      * @brief Binds a parameter pack to a function to create a callable task definition object.
