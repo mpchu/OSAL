@@ -84,7 +84,8 @@
             "xhash": "cpp",
             "mutex": "cpp",
             "message_queue": "cpp",
-            "task": "cpp"
+            "task": "cpp",
+            "condition_variable": "cpp"
         }
     }
 }
