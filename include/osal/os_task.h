@@ -120,6 +120,11 @@ private:
 #endif
     }
 
+    /**
+     * @brief Invokes the task definition and begins task execution.
+     */
+    void run() { _task_def(); }
+
     template <class Return, class... Args>
     static Return task_entry_point(Args ... args);
 

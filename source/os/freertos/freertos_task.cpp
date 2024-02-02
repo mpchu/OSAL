@@ -11,7 +11,7 @@ template<>
 void freertos_task::task_entry_point<void, void*>(void *taskObject)
 {
     freertos_task *myself = static_cast<freertos_task *>(taskObject);
-    myself->_task_def();
+    myself->run();
 }
 
 template<>
