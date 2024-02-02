@@ -31,8 +31,9 @@ public:
     lock_guard(const osal::lock_guard<Lockable> &rhs) = delete;
 
 private:
+    // Delete copy & move
     lock_guard(const lock_guard &rhs) = delete;
-    lock_guard &operator=(const lock_guard &rhs) = delete;
+    lock_guard(lock_guard &&rhs) = delete;
 };
 
 } // namespace osal

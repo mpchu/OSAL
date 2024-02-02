@@ -40,8 +40,9 @@ public:
     constexpr std::size_t maximum() noexcept { return 1; }
 
 private:
+    // Delete copy & move
     os_binary_semaphore(const os_binary_semaphore &rhs) = delete;
-    os_binary_semaphore &operator=(const os_binary_semaphore &rhs) = delete;
+    os_binary_semaphore(os_binary_semaphore &&rhs) = delete;
 
     bool impl_try_acquire_for(const std::chrono::nanoseconds &timeout);
 };
