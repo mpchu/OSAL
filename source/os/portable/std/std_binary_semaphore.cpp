@@ -8,6 +8,7 @@ using std_binary_semaphore = details::os_binary_semaphore<details::std_semaphore
 
 template<>
 std_binary_semaphore::os_binary_semaphore(bool desired)
+    : _handle(nullptr)
 {
     _handle = new details::std_semaphore_handle(1, desired);
 }

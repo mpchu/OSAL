@@ -8,7 +8,7 @@ namespace osal
 using freertos_binary_semaphore = details::os_binary_semaphore<SemaphoreHandle_t>;
 
 template<>
-freertos_binary_semaphore::os_binary_semaphore(bool desired)
+freertos_binary_semaphore::os_binary_semaphore(bool desired) : _handle(nullptr)
 {
     _handle = xSemaphoreCreateBinary();
     if (_handle == nullptr)

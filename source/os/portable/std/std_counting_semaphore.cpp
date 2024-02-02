@@ -7,7 +7,9 @@ namespace osal
 using std_counting_semaphore = details::os_counting_semaphore<details::std_semaphore_handle *>;
 
 template<>
-std_counting_semaphore::os_counting_semaphore(std::size_t max_count, std::size_t initial) : _max_count(max_count)
+std_counting_semaphore::os_counting_semaphore(std::size_t max_count, std::size_t initial)
+    : _handle(nullptr),
+      _max_count(max_count)
 {
     _handle = new details::std_semaphore_handle(_max_count, initial);
 }

@@ -10,7 +10,8 @@ using freertos_message_queue = details::os_message_queue<QueueHandle_t>;
 
 template<>
 freertos_message_queue::os_message_queue(const char *name, std::size_t item_size, std::size_t depth)
-    : _item_size(item_size),
+    : _handle(nullptr),
+      _item_size(item_size),
       _max_num_items(depth)
 {
     std::memset(_name, '\0', sizeof(_name));

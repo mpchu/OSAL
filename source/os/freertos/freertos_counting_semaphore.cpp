@@ -8,7 +8,9 @@ namespace osal
 using freertos_counting_semaphore = details::os_counting_semaphore<SemaphoreHandle_t>;
 
 template<>
-freertos_counting_semaphore::os_counting_semaphore(std::size_t max_count, std::size_t initial) : _max_count(max_count)
+freertos_counting_semaphore::os_counting_semaphore(std::size_t max_count, std::size_t initial)
+    : _handle(nullptr),
+      _max_count(max_count)
 {
     _handle = xSemaphoreCreateCounting(_max_count, initial);
     if (_handle == nullptr)

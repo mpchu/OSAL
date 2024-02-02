@@ -8,7 +8,7 @@ namespace osal
 using freertos_mutex = details::os_mutex<SemaphoreHandle_t>;
 
 template<>
-freertos_mutex::os_mutex()
+freertos_mutex::os_mutex() : _handle(nullptr)
 {
     _handle = xSemaphoreCreateMutex();
     if (_handle == nullptr)
