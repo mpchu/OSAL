@@ -1,0 +1,7 @@
+#ifndef _OSAL_INCLUDE_OSAL_MUTEX_
+#define _OSAL_INCLUDE_OSAL_MUTEX_
+
+#include "osal/os_lock_guard.h"
+#include "osal/os_mutex.h"
+
+#endif
