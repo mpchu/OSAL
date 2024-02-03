@@ -85,7 +85,8 @@
             "mutex": "cpp",
             "message_queue": "cpp",
             "task": "cpp",
-            "condition_variable": "cpp"
+            "condition_variable": "cpp",
+            "iostream": "cpp"
         }
     }
 }
