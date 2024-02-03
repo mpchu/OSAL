@@ -40,7 +40,12 @@
 #endif
 
 #ifndef configOSAL_MSG_QUEUE_NATIVE_HANDLE
-    #error "configOSAL_MSG_QUEUE_NATIVE_HANDLE is not defined for this platform"
+    #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
+        namespace osal{namespace details{class std_queue_handle;}}
+        #define configOSAL_MSG_QUEUE_NATIVE_HANDLE osal::details::std_queue_handle*
+    #else
+        #error "configOSAL_MSG_QUEUE_NATIVE_HANDLE is not defined for this platform"
+    #endif
 #endif
 
 #ifndef configOSAL_TASK_NATIVE_HANDLE
