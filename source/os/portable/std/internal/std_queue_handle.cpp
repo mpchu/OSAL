@@ -24,8 +24,8 @@ int std_queue_handle::impl_send(const uint8_t *data, std::size_t num_bytes)
     }
     else
     {
-        auto queueItem = std::make_unique<uint8_t>(_item_size);
-        std::memcpy(queueItem.get(), data, num_bytes);
+        auto queueItem = std::vector<uint8_t>(_item_size);
+        std::memcpy(queueItem.data(), data, num_bytes);
         {
             std::unique_lock<std::mutex> lock(_mutex);
             _condvar.wait(lock, [this] { return _queue.size() < _depth; });
@@ -53,7 +53,7 @@ int std_queue_handle::impl_receive(uint8_t *buffer, std::size_t buffer_size)
         std::unique_lock<std::mutex> lock(_mutex);
         _condvar.wait(lock, [this] { return _queue.size() > 0; });
 
-        std::memcpy(buffer, _queue.front().get(), _item_size);
+        std::memcpy(buffer, _queue.front().data(), _item_size);
         _queue.pop();
         _condvar.notify_one();
     }
@@ -76,8 +76,8 @@ int std_queue_handle::impl_try_send(const uint8_t *data, std::size_t num_bytes)
         std::unique_lock<std::mutex> lock(_mutex);
         if (_queue.size() < _depth)
         {
-            auto queueItem = std::make_unique<uint8_t>(_item_size);
-            std::memcpy(queueItem.get(), data, num_bytes);
+            auto queueItem = std::vector<uint8_t>(_item_size);
+            std::memcpy(queueItem.data(), data, num_bytes);
             _queue.push(std::move(queueItem));
             _condvar.notify_one();
         }
@@ -105,7 +105,7 @@ int std_queue_handle::impl_try_receive(uint8_t *buffer, std::size_t buffer_size)
         std::unique_lock<std::mutex> lock(_mutex);
         if (_queue.size())
         {
-            std::memcpy(buffer, _queue.front().get(), _item_size);
+            std::memcpy(buffer, _queue.front().data(), _item_size);
             _queue.pop();
             _condvar.notify_one();
         }
@@ -140,8 +140,8 @@ int std_queue_handle::impl_try_send_for(const uint8_t *data,
         }
         else
         {
-            auto queueItem = std::make_unique<uint8_t>(_item_size);
-            std::memcpy(queueItem.get(), data, num_bytes);
+            auto queueItem = std::vector<uint8_t>(_item_size);
+            std::memcpy(queueItem.data(), data, num_bytes);
             _queue.push(std::move(queueItem));
             _condvar.notify_one();
         }
@@ -172,7 +172,7 @@ int std_queue_handle::impl_try_receive_for(uint8_t *buffer,
         }
         else
         {
-            std::memcpy(buffer, _queue.front().get(), _item_size);
+            std::memcpy(buffer, _queue.front().data(), _item_size);
             _queue.pop();
             _condvar.notify_one();
         }

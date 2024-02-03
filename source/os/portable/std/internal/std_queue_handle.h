@@ -5,9 +5,9 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
-#include <memory>
 #include <mutex>
 #include <queue>
+#include <vector>
 
 namespace osal
 {
@@ -21,7 +21,7 @@ class std_queue_handle
 
     const std::size_t _depth;
 
-    std::queue<std::unique_ptr<uint8_t>> _queue;
+    std::queue<std::vector<uint8_t>> _queue;
 
     std::mutex _mutex;
 
