@@ -16,9 +16,9 @@ freertos_binary_semaphore::os_binary_semaphore(bool desired) : _handle(nullptr)
         configASSERT(!"Binary Semaphore Constructor Failed");
     }
 
-    if (!desired)
+    if (desired)
     {
-        acquire();
+        release();
     }
 }
 
