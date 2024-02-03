@@ -17,6 +17,7 @@ void std_semaphore_handle::impl_release(std::size_t update)
     for (std::size_t i = 0; i < update; ++i)
     {
         std::unique_lock<std::mutex> lock(_mutex);
+        _condvar.wait(lock, [this] { return _count < _max_count; });
         ++_count;
         _condvar.notify_one();
     }
@@ -25,8 +26,9 @@ void std_semaphore_handle::impl_release(std::size_t update)
 void std_semaphore_handle::impl_acquire()
 {
     std::unique_lock<std::mutex> lock(_mutex);
-    while (_count == 0) { _condvar.wait(lock); } // Loop in case of spurious wake-ups
+    _condvar.wait(lock, [this] { return _count > 0; });
     --_count;
+    _condvar.notify_one();
 }
 
 bool std_semaphore_handle::impl_try_acquire()
@@ -35,6 +37,7 @@ bool std_semaphore_handle::impl_try_acquire()
     if (_count)
     {
         --_count;
+        _condvar.notify_one();
         return true;
     }
     return false;
@@ -43,10 +46,11 @@ bool std_semaphore_handle::impl_try_acquire()
 bool std_semaphore_handle::impl_try_acquire_for(const std::chrono::nanoseconds &timeout)
 {
     std::unique_lock<std::mutex> lock(_mutex);
-    std::cv_status status = _condvar.wait_for(lock, timeout);
-    if (status == std::cv_status::no_timeout && _count)
+    bool success = _condvar.wait_for(lock, timeout, [this] { return _count > 0; });
+    if (_count)
     {
         --_count;
+        _condvar.notify_one();
         return true;
     }
     return false;

@@ -27,7 +27,7 @@ public:
     std_semaphore_handle(std::size_t max_count, std::size_t initial);
 
     ~std_semaphore_handle() = default;
-    
+
     void impl_release(std::size_t update = 1);
 
     void impl_acquire();
@@ -40,6 +40,5 @@ public:
 }
 
 }
-
 
 #endif
