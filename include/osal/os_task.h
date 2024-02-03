@@ -7,6 +7,7 @@
 #include <type_traits>
 #include "osal/osal_config.h"
 #include "osal/os_task_attributes.h"
+#include "osal/os_binary_semaphore.h"
 
 namespace osal
 {
@@ -17,9 +18,11 @@ namespace details
 /**
  * @brief Public API for an operating system task object.
  * This class template declares operations and attributes common to all operating system tasks.
- * @tparam handle_t OS-specific task handle
+ * @tparam task_handle_t OS-specific task handle
+ * @tparam sem_handle_t OS-specific semaphore handle
  */
-template <class handle_t = configOSAL_TASK_NATIVE_HANDLE>
+template <class task_handle_t = configOSAL_TASK_NATIVE_HANDLE,
+          class sem_handle_t = configOSAL_SEMAPHORE_NATIVE_HANDLE>
 class os_task
 {
     using callable_task_fn = std::function<void()>;
@@ -28,10 +31,12 @@ class os_task
 
     callable_task_fn _task_def;
 
-    handle_t _handle;
+    os_binary_semaphore<sem_handle_t> _exit_sem;
+
+    task_handle_t _handle;
 
 public:
-    using native_handle_type = handle_t; /**< Underlying OS task handle implementation */
+    using native_handle_type = task_handle_t; /**< Underlying OS task handle implementation */
 
     /**
      * @brief Creates a new task in the operating system and executes it.
@@ -42,7 +47,8 @@ public:
     template <class Function>
     explicit os_task(task_attributes attr, Function &&func)
         : _attributes(std::forward<task_attributes>(attr)),
-          _task_def(std::forward<Function>(func))
+          _task_def(std::forward<Function>(func)),
+          _exit_sem(true)
     {
         create_task();
     }
@@ -58,7 +64,8 @@ public:
     template <class Function, class... Args>
     explicit os_task(task_attributes attr, Function &&func, Args &&... args)
         : _attributes(std::forward<task_attributes>(attr)),
-          _task_def(create_callable_task(std::forward<Function>(func), std::forward<Args>(args)...))
+          _task_def(create_callable_task(std::forward<Function>(func), std::forward<Args>(args)...)),
+          _exit_sem(true)
     {
         create_task();
     }
@@ -82,6 +89,12 @@ public:
      * @return Task attributes 
      */
     task_attributes attributes() { return _attributes; }
+
+    /**
+     * @brief Suspends execution of the calling task until the target task
+     *        that join() is being called on finishes execution.
+     */
+    void join() { _exit_sem.acquire(); }
 
 private:
     // Delete copy & move
@@ -114,17 +127,43 @@ private:
 
     /**
      * @brief Invokes the task definition and begins task execution.
+     *        Every operating system implementation must use this to begin task execution.
      */
-    void run() { _task_def(); }
+    void run()
+    {
+        _exit_sem.acquire();
+        _task_def();
+        _exit_sem.release(); // Signal that the task is done running
+    }
 
+    /**
+     * @brief Task entry point function used by the OS to begin execution for this task.
+     * @tparam Return Return type 
+     * @tparam Args Task Entry Point Arguments
+     * @param[in] args Task entry point arguments. Typically this will contain a pointer to the task being executed.
+     * @return OS-specific return type for tasks
+     */
     template <class Return, class... Args>
     static Return task_entry_point(Args ... args);
 
+    /**
+     * @brief Translates the public API task priority to the actual task priority
+     *        for the underlying operating system.
+     * @tparam OsPriority OS-specific priority type
+     * @param[in] priority OSAL priority. Ranges from 0 - configOSAL_MAXIMUM_TASK_PRIORITY.
+     * @return Task priority for the underlying operating system implementation
+     */
     template <class OsPriority>
     static OsPriority translate_priority(int priority);
 
+    /**
+     * @brief Performs operating system specific calls to create the task.
+     */
     void create_task();
 
+    /**
+     * @brief Performs operating system specific calls to properly destroy the task.
+     */
     void destroy_task();
 };
 

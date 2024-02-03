@@ -1,12 +1,14 @@
 #include "osal/osal_config.h"
 #include "osal/os_task.h"
 
+#include "os/portable/std/internal/std_semaphore_handle.h"
+
 #include <thread>
 
 namespace osal
 {
 
-using std_task = details::os_task<std::thread *>;
+using std_task = details::os_task<std::thread *, details::std_semaphore_handle *>;
 
 template<>
 template<>
@@ -26,12 +28,16 @@ int std_task::translate_priority<int>(int priority)
 template<>
 void std_task::create_task()
 {
-    _handle = new std::thread(_task_def);
+    _handle = new std::thread(&std_task::run, this);
 }
 
 template<>
 void std_task::destroy_task()
 {
+    if (_handle->joinable())
+    {
+        _handle->join();
+    }
     delete _handle;
 }
 

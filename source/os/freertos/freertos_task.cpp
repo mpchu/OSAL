@@ -1,10 +1,15 @@
-#include "osal/osal_config.h"
 #include "osal/os_task.h"
+#include "osal/osal_config.h"
+
+#include "FreeRTOS.h"
+#include "FreeRTOSConfig.h"
+#include "semphr.h"
+#include "task.h"
 
 namespace osal
 {
 
-using freertos_task = details::os_task<TaskHandle_t>;
+using freertos_task = details::os_task<TaskHandle_t, SemaphoreHandle_t>;
 
 template<>
 template<>
