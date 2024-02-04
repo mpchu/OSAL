@@ -29,6 +29,16 @@ public:
     static constexpr bool is_steady = false;
 
     static time_point now() noexcept;
+
+    static rep current_tick() noexcept
+    {
+        return to_ticks(now());
+    }
+
+    static rep to_ticks(const time_point &time) noexcept
+    {
+        return time.time_since_epoch().count();
+    }
 };
 
 } // namespace details
