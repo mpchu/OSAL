@@ -8,15 +8,15 @@ namespace osal
 using std_message_queue = details::os_message_queue<details::std_queue_handle *>;
 
 template<>
-std_message_queue::os_message_queue(const char *name, std::size_t item_size, std::size_t depth)
+std_message_queue::os_message_queue(const char *name, std::size_t depth, std::size_t item_size)
     : _handle(nullptr),
-      _item_size(item_size),
-      _max_num_items(depth)
+      _max_num_items(depth),
+      _item_size(item_size)
 {
     std::memset(_name, '\0', sizeof(_name));
     std::strncpy(_name, name, sizeof(_name) - 1);
 
-    _handle = new details::std_queue_handle(item_size, depth);
+    _handle = new details::std_queue_handle(_max_num_items, _item_size);
 }
 
 template<>

@@ -23,9 +23,9 @@ class os_message_queue
 
     handle_t _handle;
 
-    std::size_t _item_size;
-
     std::size_t _max_num_items;
+
+    std::size_t _item_size;
 
 public:
     using native_handle_type = handle_t; /**< Underlying OS queue handle implementation */
@@ -34,10 +34,10 @@ public:
      * @brief Creates a new IPC message queue in the operating system.
      * The constructor definition will perform operating system specific operations to create a new queue.
      * @param[in] name The name of the new queue being created
-     * @param[in] item_size Size of a single item in the queue
      * @param[in] depth The maximum number of items that can be stored in the queue
+     * @param[in] item_size Size of a single item in the queue
      */
-    os_message_queue(const char *name, std::size_t item_size, std::size_t depth);
+    os_message_queue(const char *name, std::size_t depth, std::size_t item_size);
 
     /**
      * @brief Destroys the IPC message queue and cleans up any OS resources that were in use.

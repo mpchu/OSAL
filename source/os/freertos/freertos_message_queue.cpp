@@ -9,15 +9,15 @@ namespace osal
 using freertos_message_queue = details::os_message_queue<QueueHandle_t>;
 
 template<>
-freertos_message_queue::os_message_queue(const char *name, std::size_t item_size, std::size_t depth)
+freertos_message_queue::os_message_queue(const char *name, std::size_t depth, std::size_t item_size)
     : _handle(nullptr),
-      _item_size(item_size),
-      _max_num_items(depth)
+      _max_num_items(depth),
+      _item_size(item_size)
 {
     std::memset(_name, '\0', sizeof(_name));
     std::strncpy(_name, name, sizeof(_name) - 1);
 
-    _handle = xQueueCreate(depth, item_size);
+    _handle = xQueueCreate(_max_num_items, _item_size);
     if (_handle == nullptr)
     {
         configASSERT(!"Queue Constructor Failed");

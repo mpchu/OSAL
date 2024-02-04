@@ -89,7 +89,7 @@ void osal_task_example()
             .set_stack_size(1024),
         b); // t4 runs baz::operator() on a copy of object b
 
-    osal::this_task::sleep_for(10ms); // Block the init task so that the underlying OS can create create the new tasks
+    osal::this_task::sleep_for(10ms); // Block the init task so that the underlying OS can create the new tasks
 
     t1.join();
     t2.join();

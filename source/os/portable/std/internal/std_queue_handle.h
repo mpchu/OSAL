@@ -17,9 +17,9 @@ namespace details
 
 class std_queue_handle
 {
-    const std::size_t _item_size;
-
     const std::size_t _depth;
+
+    const std::size_t _item_size;
 
     std::queue<std::vector<uint8_t>> _queue;
 
@@ -28,7 +28,7 @@ class std_queue_handle
     std::condition_variable _condvar;
 
 public:
-    std_queue_handle(std::size_t item_size, std::size_t depth);
+    std_queue_handle(std::size_t depth, std::size_t item_size);
 
     ~std_queue_handle() = default;
 

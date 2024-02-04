@@ -7,7 +7,7 @@ namespace osal
 namespace details
 {
 
-std_queue_handle::std_queue_handle(std::size_t item_size, std::size_t depth) : _item_size(item_size), _depth(depth)
+std_queue_handle::std_queue_handle(std::size_t depth, std::size_t item_size) : _depth(depth), _item_size(item_size)
 {
 }
 
