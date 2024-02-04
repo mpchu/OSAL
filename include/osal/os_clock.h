@@ -30,20 +30,21 @@ public:
 
     static time_point now() noexcept;
 
-    static rep current_tick() noexcept
+    static duration current_tick() noexcept
     {
         return to_ticks(now());
     }
 
-    static rep to_ticks(const time_point &time) noexcept
+    static duration to_ticks(const time_point &time) noexcept
     {
-        return time.time_since_epoch().count();
+        return time.time_since_epoch();
     }
 };
 
 } // namespace details
 
 using system_clock = details::os_clock<>;
+using ticks = system_clock::duration;
 
 } // namespace chrono
 
