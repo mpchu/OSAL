@@ -43,7 +43,7 @@ bool std_semaphore_handle::impl_try_acquire()
     return false;
 }
 
-bool std_semaphore_handle::impl_try_acquire_for(const std::chrono::nanoseconds &timeout)
+bool std_semaphore_handle::impl_try_acquire_for(const osal::chrono::ticks &timeout)
 {
     std::unique_lock<std::mutex> lock(_mutex);
     bool success = _condvar.wait_for(lock, timeout, [this] { return _count > 0; });

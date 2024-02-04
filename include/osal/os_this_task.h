@@ -2,6 +2,7 @@
 #define _OSAL_INCLUDE_OSAL_OS_THIS_TASK_H_
 
 #include <chrono>
+#include "osal/os_clock.h"
 
 namespace osal
 {
@@ -23,13 +24,13 @@ void yield() noexcept;
 template <class Rep, class Period>
 void sleep_for(const std::chrono::duration<Rep, Period> &sleep_duration)
 {
-    details::os_sleep_for(std::chrono::duration_cast<std::chrono::nanoseconds>(sleep_duration));
+    details::os_sleep_for(std::chrono::duration_cast<osal::chrono::ticks>(sleep_duration));
 }
 
 namespace details
 {
 
-void os_sleep_for(const std::chrono::nanoseconds &sleep_duration);
+void os_sleep_for(const osal::chrono::ticks &sleep_duration);
 
 } // namespace details
 

@@ -43,12 +43,9 @@ void freertos_mutex::unlock()
 }
 
 template<>
-bool freertos_mutex::impl_try_lock_for(const std::chrono::nanoseconds &timeout)
+bool freertos_mutex::impl_try_lock_for(const osal::chrono::ticks &timeout)
 {
-    BaseType_t success = xSemaphoreTake(
-        _handle,
-        pdMS_TO_TICKS(
-            std::chrono::duration_cast<std::chrono::milliseconds>(timeout).count()));
+    BaseType_t success = xSemaphoreTake(_handle, timeout.count());
     return (success == pdTRUE) ? true : false;
 }
 

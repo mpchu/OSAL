@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstddef>
 #include "osal/osal_config.h"
+#include "osal/os_clock.h"
 
 namespace osal
 {
@@ -90,7 +91,7 @@ public:
         return impl_send(
             data,
             num_bytes,
-            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+            std::chrono::duration_cast<osal::chrono::ticks>(timeout));
     }
 
     /**
@@ -109,7 +110,7 @@ public:
         return impl_receive(
             buffer,
             buffer_size,
-            std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+            std::chrono::duration_cast<osal::chrono::ticks>(timeout));
     }
 
     /**
@@ -120,7 +121,7 @@ public:
      */
     bool try_send(const void *data, std::size_t num_bytes)
     {
-        return impl_send(data, num_bytes, std::chrono::nanoseconds(0)) == 0;
+        return impl_send(data, num_bytes, osal::chrono::ticks(0)) == 0;
     }
 
     /**
@@ -131,7 +132,7 @@ public:
      */
     bool try_receive(void *buffer, std::size_t buffer_size)
     {
-        return impl_receive(buffer, buffer_size, std::chrono::nanoseconds(0)) == 0;
+        return impl_receive(buffer, buffer_size, osal::chrono::ticks(0)) == 0;
     }
 
     /**
@@ -157,7 +158,7 @@ private:
     os_message_queue(const os_message_queue &rhs) = delete;
     os_message_queue(os_message_queue &&rhs) = delete;
 
-    static constexpr std::chrono::nanoseconds infinite_timeout = std::chrono::nanoseconds(-1); /**< Timeout value used to block indefinitely on message queue operations */
+    static constexpr osal::chrono::ticks infinite_timeout = osal::chrono::ticks(-1); /**< Timeout value used to block indefinitely on message queue operations */
 
     /**
      * @brief OS-specific implementation for sending data through the message queue.
@@ -168,7 +169,7 @@ private:
      */
     int impl_send(const void *data,
                   std::size_t num_bytes,
-                  const std::chrono::nanoseconds &timeout = infinite_timeout);
+                  const osal::chrono::ticks &timeout = infinite_timeout);
 
     /**
      * @brief OS-specific implementation for receiving data from the message queue.
@@ -179,7 +180,7 @@ private:
      */
     int impl_receive(void *buffer,
                      std::size_t buffer_size,
-                     const std::chrono::nanoseconds &timeout = infinite_timeout);
+                     const osal::chrono::ticks &timeout = infinite_timeout);
 };
 
 } // namespace details

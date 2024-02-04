@@ -8,6 +8,7 @@
 #include <mutex>
 #include <queue>
 #include <vector>
+#include "osal/os_clock.h"
 
 namespace osal
 {
@@ -42,11 +43,11 @@ public:
 
     int impl_try_send_for(const uint8_t *data,
                           std::size_t num_bytes,
-                          const std::chrono::nanoseconds &timeout);
+                          const osal::chrono::ticks &timeout);
 
     int impl_try_receive_for(uint8_t *buffer,
                              std::size_t buffer_size,
-                             const std::chrono::nanoseconds &timeout);
+                             const osal::chrono::ticks &timeout);
 };
 
 }

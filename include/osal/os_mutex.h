@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include "osal/osal_config.h"
+#include "osal/os_clock.h"
 
 namespace osal
 {
@@ -31,7 +32,7 @@ public:
     template <class Rep, class Period>
     bool try_lock_for(const std::chrono::duration<Rep, Period> &timeout)
     {
-        return impl_try_lock_for(std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+        return impl_try_lock_for(std::chrono::duration_cast<osal::chrono::ticks>(timeout));
     }
 
     void unlock();
@@ -41,7 +42,7 @@ private:
     os_mutex(const os_mutex &rhs) = delete;
     os_mutex(os_mutex &&rhs) = delete;
 
-    bool impl_try_lock_for(const std::chrono::nanoseconds &timeout);
+    bool impl_try_lock_for(const osal::chrono::ticks &timeout);
 };
 
 } // namespace details

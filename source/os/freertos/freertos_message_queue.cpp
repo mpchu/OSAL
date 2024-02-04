@@ -33,12 +33,11 @@ freertos_message_queue::~os_message_queue()
 template<>
 int freertos_message_queue::impl_send(const void *data,
                                       std::size_t num_bytes,
-                                      const std::chrono::nanoseconds &timeout)
+                                      const osal::chrono::ticks &timeout)
 {
     TickType_t ticks = (timeout == infinite_timeout)
                        ? portMAX_DELAY
-                       : pdMS_TO_TICKS(
-                           std::chrono::duration_cast<std::chrono::milliseconds>(timeout).count());
+                       : timeout.count();
     BaseType_t rtosCode = xQueueSendToBack(_handle, data, ticks);
     return (rtosCode == pdTRUE) ? 0 : -1;
 }
@@ -46,7 +45,7 @@ int freertos_message_queue::impl_send(const void *data,
 template<>
 int freertos_message_queue::impl_receive(void *buffer,
                                          std::size_t buffer_size,
-                                         const std::chrono::nanoseconds &timeout)
+                                         const osal::chrono::ticks &timeout)
 {
     int status = 0;
     if (buffer_size < _item_size)
@@ -57,8 +56,7 @@ int freertos_message_queue::impl_receive(void *buffer,
     {
         TickType_t ticks = (timeout == infinite_timeout)
                            ? portMAX_DELAY
-                           : pdMS_TO_TICKS(
-                               std::chrono::duration_cast<std::chrono::milliseconds>(timeout).count());
+                           : timeout.count();
         BaseType_t rtosCode = xQueueReceive(_handle, buffer, ticks);
         if (rtosCode != pdTRUE)
         {

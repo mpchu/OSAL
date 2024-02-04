@@ -28,7 +28,7 @@ std_message_queue::~os_message_queue()
 template<>
 int std_message_queue::impl_send(const void *data,
                                  std::size_t num_bytes,
-                                 const std::chrono::nanoseconds &timeout)
+                                 const osal::chrono::ticks &timeout)
 {
     int status = 0;
     if (timeout == infinite_timeout)
@@ -49,8 +49,8 @@ int std_message_queue::impl_send(const void *data,
 
 template<>
 int std_message_queue::impl_receive(void *buffer,
-                                         std::size_t buffer_size,
-                                         const std::chrono::nanoseconds &timeout)
+                                    std::size_t buffer_size,
+                                    const osal::chrono::ticks &timeout)
 {
     int status = 0;
     if (timeout == infinite_timeout)

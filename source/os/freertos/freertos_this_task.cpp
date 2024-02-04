@@ -16,11 +16,9 @@ void yield() noexcept
 namespace details
 {
 
-void os_sleep_for(const std::chrono::nanoseconds &sleep_duration)
+void os_sleep_for(const osal::chrono::ticks &sleep_duration)
 {
-    vTaskDelay(
-        pdMS_TO_TICKS(
-            std::chrono::duration_cast<std::chrono::milliseconds>(sleep_duration).count()));
+    vTaskDelay(sleep_duration.count());
 }
 
 } // namespace details

@@ -39,7 +39,7 @@ bool std_counting_semaphore::try_acquire()
 }
 
 template<>
-bool std_counting_semaphore::impl_try_acquire_for(const std::chrono::nanoseconds &timeout)
+bool std_counting_semaphore::impl_try_acquire_for(const osal::chrono::ticks &timeout)
 {
     return _handle->impl_try_acquire_for(timeout);
 }

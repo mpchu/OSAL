@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <cstddef>
 #include <mutex>
+#include "osal/os_clock.h"
 
 namespace osal
 {
@@ -34,7 +35,7 @@ public:
 
     bool impl_try_acquire();
 
-    bool impl_try_acquire_for(const std::chrono::nanoseconds &timeout);
+    bool impl_try_acquire_for(const osal::chrono::ticks &timeout);
 };
 
 }

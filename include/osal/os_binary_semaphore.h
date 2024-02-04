@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstddef>
 #include "osal/osal_config.h"
+#include "osal/os_clock.h"
 
 namespace osal
 {
@@ -34,7 +35,7 @@ public:
     template <class Rep, class Period>
     bool try_acquire_for(const std::chrono::duration<Rep, Period> &timeout)
     {
-        return impl_try_acquire_for(const std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+        return impl_try_acquire_for(const std::chrono::duration_cast<osal::chrono::ticks>(timeout));
     }
 
     constexpr std::size_t maximum() noexcept { return 1; }
@@ -44,7 +45,7 @@ private:
     os_binary_semaphore(const os_binary_semaphore &rhs) = delete;
     os_binary_semaphore(os_binary_semaphore &&rhs) = delete;
 
-    bool impl_try_acquire_for(const std::chrono::nanoseconds &timeout);
+    bool impl_try_acquire_for(const osal::chrono::ticks &timeout);
 };
 
 } // namespace details

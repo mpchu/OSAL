@@ -15,7 +15,7 @@ void yield() noexcept
 namespace details
 {
 
-void os_sleep_for(const std::chrono::nanoseconds &sleep_duration)
+void os_sleep_for(const osal::chrono::ticks &sleep_duration)
 {
     std::this_thread::sleep_for(sleep_duration);
 }

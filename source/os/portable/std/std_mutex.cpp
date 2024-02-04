@@ -36,7 +36,7 @@ void std_mutex::unlock()
 }
 
 template<>
-bool std_mutex::impl_try_lock_for(const std::chrono::nanoseconds &timeout)
+bool std_mutex::impl_try_lock_for(const osal::chrono::ticks &timeout)
 {
     return _handle->try_lock_for(timeout);
 }
