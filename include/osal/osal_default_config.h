@@ -57,4 +57,22 @@
     #endif
 #endif
 
+#ifndef configOSAL_TICK_TYPE
+    #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
+        #include <chrono>
+        #define configOSAL_TICK_TYPE std::chrono::system_clock::rep
+    #else
+        #error "configOSAL_TICK_TYPE is not defined for this platform
+    #endif
+#endif
+
+#ifndef configOSAL_TICK_RATE_HZ
+    #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
+        #include <chrono>
+        #define configOSAL_TICK_RATE_HZ std::chrono::system_clock::period::den
+    #else
+        #error "configOSAL_TICK_RATE_HZ is not defined for this platform
+    #endif
+#endif
+
 #endif

@@ -11,6 +11,9 @@
 #define configOSAL_MSG_QUEUE_NATIVE_HANDLE QueueHandle_t
 #define configOSAL_TASK_NATIVE_HANDLE      TaskHandle_t
 
+#define configOSAL_TICK_TYPE               TickType_t
+#define configOSAL_TICK_RATE_HZ            configTICK_RATE_HZ
+
 #include "osal/osal_default_config.h"
 
 #endif

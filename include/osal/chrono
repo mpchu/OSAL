@@ -1,0 +1,7 @@
+#ifndef _OSAL_INCLUDE_OSAL_CHRONO_
+#define _OSAL_INCLUDE_OSAL_CHRONO_
+
+#include <chrono>
+#include "osal/os_clock.h"
+
+#endif
