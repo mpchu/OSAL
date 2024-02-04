@@ -11,9 +11,11 @@
     #define configOSAL_MAXIMUM_QUEUE_NAME_SIZE 64
 #endif
 
-#ifndef configOSAL_MAXIMUM_TASK_PRIORITY
-    #define configOSAL_MAXIMUM_TASK_PRIORITY INT32_MAX
+#ifndef configOSAL_NUM_TASK_PRIORITIES
+    #define configOSAL_NUM_TASK_PRIORITIES INT32_MAX
 #endif
+
+constexpr int32_t configOSAL_MAXIMUM_TASK_PRIORITY = configOSAL_NUM_TASK_PRIORITIES - 1;
 
 #if defined(_WIN32) || defined(__linux__)
     #define configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB 1

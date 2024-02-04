@@ -25,7 +25,7 @@ UBaseType_t freertos_task::translate_priority<UBaseType_t>(int priority)
 {
     // Translate from the public API priority to the actual RTOS priority
     constexpr BaseType_t numPriorities = configMAX_PRIORITIES;
-    constexpr uint64_t priorityBucketSize = configOSAL_MAXIMUM_TASK_PRIORITY / numPriorities;
+    constexpr uint64_t priorityBucketSize = configOSAL_NUM_TASK_PRIORITIES / numPriorities;
     UBaseType_t rtosPriority = priority / priorityBucketSize;
     return tskIDLE_PRIORITY + rtosPriority;
 }

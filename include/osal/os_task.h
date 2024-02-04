@@ -127,7 +127,7 @@ private:
 
     /**
      * @brief Invokes the task definition and begins task execution.
-     *        Every operating system implementation must use this to begin task execution.
+     * Every operating system implementation must use this to begin task execution.
      */
     void run()
     {
