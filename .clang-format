@@ -1,0 +1,26 @@
+# Basic style template
+BasedOnStyle: Google
+
+# Indentation rules
+UseTab: Never
+IndentWidth: 4
+ColumnLimit: 0
+IncludeBlocks: Merge
+IndentCaseLabels: false
+IndentCaseBlocks: false
+AccessModifierOffset: -4
+NamespaceIndentation: None
+
+# Brace and line break rules
+BreakBeforeBraces: Allman
+InsertBraces: true
+BreakBeforeTernaryOperators: true
+AllowShortBlocksOnASingleLine: true
+
+# Alignment rules
+AlignAfterOpenBracket: Align
+DerivePointerAlignment: false
+PointerAlignment: Right
+AlignConsecutiveMacros: true
+AlignConsecutiveBitFields: true
+AlignOperands: Align
