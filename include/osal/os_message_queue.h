@@ -9,6 +9,19 @@
 namespace osal
 {
 
+/**
+ * @enum mq_status
+ * Enumeration describing whether a message queue operation
+ * returned due to success or some error.
+ */
+enum class mq_status : int
+{
+    success = 0,
+    null_buffer = -1,
+    invalid_length = -2,
+    timeout = -3
+};
+
 namespace details
 {
 
@@ -58,7 +71,7 @@ public:
      * @param[in] num_bytes Number of bytes to send
      * @return 0 on success, error codes otherwise
      */
-    int send(const void *data, std::size_t num_bytes)
+    mq_status send(const void *data, std::size_t num_bytes)
     {
         return impl_send(data, num_bytes, infinite_timeout);
     }
@@ -70,7 +83,7 @@ public:
      * @param[in] buffer_size Size of receive buffer in bytes
      * @return 0 on success, error codes otherwise 
      */
-    int receive(void *buffer, std::size_t buffer_size)
+    mq_status receive(void *buffer, std::size_t buffer_size)
     {
         return impl_receive(buffer, buffer_size, infinite_timeout);
     }
@@ -84,9 +97,9 @@ public:
      * @return 0 on success, error codes otherwise
      */
     template <class Rep, class Period>
-    int send(const void *data,
-             std::size_t num_bytes,
-             const std::chrono::duration<Rep, Period> &timeout)
+    mq_status send(const void *data,
+                   std::size_t num_bytes,
+                   const std::chrono::duration<Rep, Period> &timeout)
     {
         return impl_send(
             data,
@@ -103,9 +116,9 @@ public:
      * @return 0 on success, error codes otherwise 
      */
     template <class Rep, class Period>
-    int receive(void *buffer,
-                std::size_t buffer_size,
-                const std::chrono::duration<Rep, Period> &timeout)
+    mq_status receive(void *buffer,
+                      std::size_t buffer_size,
+                      const std::chrono::duration<Rep, Period> &timeout)
     {
         return impl_receive(
             buffer,
@@ -121,7 +134,7 @@ public:
      */
     bool try_send(const void *data, std::size_t num_bytes)
     {
-        return impl_send(data, num_bytes, osal::chrono::ticks(0)) == 0;
+        return impl_send(data, num_bytes, osal::chrono::ticks(0)) == mq_status::success;
     }
 
     /**
@@ -132,7 +145,7 @@ public:
      */
     bool try_receive(void *buffer, std::size_t buffer_size)
     {
-        return impl_receive(buffer, buffer_size, osal::chrono::ticks(0)) == 0;
+        return impl_receive(buffer, buffer_size, osal::chrono::ticks(0)) == mq_status::success;
     }
 
     /**
@@ -167,9 +180,9 @@ private:
      * @param[in] timeout Maximum amount of time to attempt sending data, if -1 then blocks indefinitely
      * @return 0 on success, error codes otherwise 
      */
-    int impl_send(const void *data,
-                  std::size_t num_bytes,
-                  const osal::chrono::ticks &timeout = infinite_timeout);
+    mq_status impl_send(const void *data,
+                        std::size_t num_bytes,
+                        const osal::chrono::ticks &timeout = infinite_timeout);
 
     /**
      * @brief OS-specific implementation for receiving data from the message queue.
@@ -178,9 +191,9 @@ private:
      * @param[in] timeout Maximum amount of time to attempt receiving data, if -1 then blocks indefinitely
      * @return 0 on success, error codes otherwise 
      */
-    int impl_receive(void *buffer,
-                     std::size_t buffer_size,
-                     const osal::chrono::ticks &timeout = infinite_timeout);
+    mq_status impl_receive(void *buffer,
+                           std::size_t buffer_size,
+                           const osal::chrono::ticks &timeout = infinite_timeout);
 };
 
 } // namespace details

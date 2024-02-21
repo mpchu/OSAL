@@ -9,6 +9,7 @@
 #include <queue>
 #include <vector>
 #include "osal/os_clock.h"
+#include "osal/os_message_queue.h"
 
 namespace osal
 {
@@ -33,21 +34,21 @@ public:
 
     ~std_queue_handle() = default;
 
-    int impl_send(const uint8_t *data, std::size_t num_bytes);
+    mq_status impl_send(const uint8_t *data, std::size_t num_bytes);
 
-    int impl_receive(uint8_t *buffer, std::size_t buffer_size);
+    mq_status impl_receive(uint8_t *buffer, std::size_t buffer_size);
 
-    int impl_try_send(const uint8_t *data, std::size_t num_bytes);
+    mq_status impl_try_send(const uint8_t *data, std::size_t num_bytes);
 
-    int impl_try_receive(uint8_t *buffer, std::size_t buffer_size);
+    mq_status impl_try_receive(uint8_t *buffer, std::size_t buffer_size);
 
-    int impl_try_send_for(const uint8_t *data,
-                          std::size_t num_bytes,
-                          const osal::chrono::ticks &timeout);
+    mq_status impl_try_send_for(const uint8_t *data,
+                                std::size_t num_bytes,
+                                const osal::chrono::ticks &timeout);
 
-    int impl_try_receive_for(uint8_t *buffer,
-                             std::size_t buffer_size,
-                             const osal::chrono::ticks &timeout);
+    mq_status impl_try_receive_for(uint8_t *buffer,
+                                   std::size_t buffer_size,
+                                   const osal::chrono::ticks &timeout);
 };
 
 }

@@ -31,26 +31,42 @@ freertos_message_queue::~os_message_queue()
 }
 
 template<>
-int freertos_message_queue::impl_send(const void *data,
-                                      std::size_t num_bytes,
-                                      const osal::chrono::ticks &timeout)
+mq_status freertos_message_queue::impl_send(const void *data,
+                                            std::size_t num_bytes,
+                                            const osal::chrono::ticks &timeout)
 {
-    TickType_t ticks = (timeout == infinite_timeout)
-                       ? portMAX_DELAY
-                       : timeout.count();
-    BaseType_t rtosCode = xQueueSendToBack(_handle, data, ticks);
-    return (rtosCode == pdTRUE) ? 0 : -1;
+    mq_status status = mq_status::success;
+    if (data == nullptr)
+    {
+        status = mq_status::null_buffer;
+    }
+    else
+    {
+        TickType_t ticks = (timeout == infinite_timeout)
+                           ? portMAX_DELAY
+                           : timeout.count();
+        BaseType_t rtosCode = xQueueSendToBack(_handle, data, ticks);
+        if (rtosCode != pdTRUE)
+        {
+            status = mq_status::timeout;
+        }
+    }
+    return status;
 }
 
 template<>
-int freertos_message_queue::impl_receive(void *buffer,
-                                         std::size_t buffer_size,
-                                         const osal::chrono::ticks &timeout)
+mq_status freertos_message_queue::impl_receive(void *buffer,
+                                               std::size_t buffer_size,
+                                               const osal::chrono::ticks &timeout)
 {
-    int status = 0;
-    if (buffer_size < _item_size)
+    mq_status status = mq_status::success;
+    if (buffer == nullptr)
     {
-        status = -1;
+        status = mq_status::null_buffer;
+    }
+    else if (buffer_size < _item_size)
+    {
+        status = mq_status::invalid_length;
     }
     else
     {
@@ -60,7 +76,7 @@ int freertos_message_queue::impl_receive(void *buffer,
         BaseType_t rtosCode = xQueueReceive(_handle, buffer, ticks);
         if (rtosCode != pdTRUE)
         {
-            status = -2;
+            status = mq_status::timeout;
         }
     }
     return status;

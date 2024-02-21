@@ -11,16 +11,16 @@ std_queue_handle::std_queue_handle(std::size_t depth, std::size_t item_size) : _
 {
 }
 
-int std_queue_handle::impl_send(const uint8_t *data, std::size_t num_bytes)
+mq_status std_queue_handle::impl_send(const uint8_t *data, std::size_t num_bytes)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (data == nullptr)
     {
-        status = -1;
+        status = mq_status::null_buffer;
     }
     else if (_item_size < num_bytes)
     {
-        status = -2;
+        status = mq_status::invalid_length;
     }
     else
     {
@@ -37,16 +37,16 @@ int std_queue_handle::impl_send(const uint8_t *data, std::size_t num_bytes)
     return status;
 }
 
-int std_queue_handle::impl_receive(uint8_t *buffer, std::size_t buffer_size)
+mq_status std_queue_handle::impl_receive(uint8_t *buffer, std::size_t buffer_size)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (buffer == nullptr)
     {
-        status = -1;
+        status = mq_status::null_buffer;
     }
     else if (_item_size > buffer_size)
     {
-        status = -2;
+        status = mq_status::invalid_length;
     }
     else
     {
@@ -60,16 +60,16 @@ int std_queue_handle::impl_receive(uint8_t *buffer, std::size_t buffer_size)
     return status;
 }
 
-int std_queue_handle::impl_try_send(const uint8_t *data, std::size_t num_bytes)
+mq_status std_queue_handle::impl_try_send(const uint8_t *data, std::size_t num_bytes)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (data == nullptr)
     {
-        status = -1;
+        status = mq_status::null_buffer;
     }
     else if (_item_size < num_bytes)
     {
-        status = -2;
+        status = mq_status::invalid_length;
     }
     else
     {
@@ -83,22 +83,22 @@ int std_queue_handle::impl_try_send(const uint8_t *data, std::size_t num_bytes)
         }
         else
         {
-            status = -3;
+            status = mq_status::timeout;
         }
     }
     return status;
 }
 
-int std_queue_handle::impl_try_receive(uint8_t *buffer, std::size_t buffer_size)
+mq_status std_queue_handle::impl_try_receive(uint8_t *buffer, std::size_t buffer_size)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (buffer == nullptr)
     {
-        status = -1;
+        status = mq_status::null_buffer;
     }
     else if (_item_size > buffer_size)
     {
-        status = -2;
+        status = mq_status::invalid_length;
     }
     else
     {
@@ -111,24 +111,24 @@ int std_queue_handle::impl_try_receive(uint8_t *buffer, std::size_t buffer_size)
         }
         else
         {
-            status = -3;
+            status = mq_status::timeout;
         }
     }
     return status;
 }
 
-int std_queue_handle::impl_try_send_for(const uint8_t *data,
-                                        std::size_t num_bytes,
-                                        const osal::chrono::ticks &timeout)
+mq_status std_queue_handle::impl_try_send_for(const uint8_t *data,
+                                              std::size_t num_bytes,
+                                              const osal::chrono::ticks &timeout)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (data == nullptr)
     {
-        status = -1;
+        status = mq_status::null_buffer;
     }
     else if (_item_size < num_bytes)
     {
-        status = -2;
+        status = mq_status::invalid_length;
     }
     else
     {
@@ -136,7 +136,7 @@ int std_queue_handle::impl_try_send_for(const uint8_t *data,
         bool success = _condvar.wait_for(lock, timeout, [this] { return _queue.size() < _depth; });
         if (!success)
         {
-            status = -3;
+            status = mq_status::timeout;
         }
         else
         {
@@ -149,18 +149,18 @@ int std_queue_handle::impl_try_send_for(const uint8_t *data,
     return status;
 }
 
-int std_queue_handle::impl_try_receive_for(uint8_t *buffer,
-                                           std::size_t buffer_size,
-                                           const osal::chrono::ticks &timeout)
+mq_status std_queue_handle::impl_try_receive_for(uint8_t *buffer,
+                                                 std::size_t buffer_size,
+                                                 const osal::chrono::ticks &timeout)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (buffer == nullptr)
     {
-        status = -1;
+        status = mq_status::null_buffer;
     }
     else if (_item_size > buffer_size)
     {
-        status = -2;
+        status = mq_status::invalid_length;
     }
     else
     {
@@ -168,7 +168,7 @@ int std_queue_handle::impl_try_receive_for(uint8_t *buffer,
         bool success = _condvar.wait_for(lock, timeout, [this] { return _queue.size() > 0; });
         if (!success)
         {
-            status = -3;
+            status = mq_status::timeout;
         }
         else
         {

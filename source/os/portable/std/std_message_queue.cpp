@@ -26,11 +26,11 @@ std_message_queue::~os_message_queue()
 }
 
 template<>
-int std_message_queue::impl_send(const void *data,
-                                 std::size_t num_bytes,
-                                 const osal::chrono::ticks &timeout)
+mq_status std_message_queue::impl_send(const void *data,
+                                       std::size_t num_bytes,
+                                       const osal::chrono::ticks &timeout)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (timeout == infinite_timeout)
     {
         status = _handle->impl_send(
@@ -48,11 +48,11 @@ int std_message_queue::impl_send(const void *data,
 }
 
 template<>
-int std_message_queue::impl_receive(void *buffer,
-                                    std::size_t buffer_size,
-                                    const osal::chrono::ticks &timeout)
+mq_status std_message_queue::impl_receive(void *buffer,
+                                          std::size_t buffer_size,
+                                          const osal::chrono::ticks &timeout)
 {
-    int status = 0;
+    mq_status status = mq_status::success;
     if (timeout == infinite_timeout)
     {
         status = _handle->impl_receive(
