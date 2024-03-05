@@ -1,6 +1,7 @@
 #include "osal/os_task.h"
 #include "osal/osal_config.h"
 
+#include <memory>
 #include "FreeRTOS.h"
 #include "FreeRTOSConfig.h"
 #include "semphr.h"
@@ -33,13 +34,46 @@ UBaseType_t freertos_task::translate_priority<UBaseType_t>(int priority)
 template<>
 void freertos_task::create_task()
 {
-    BaseType_t success = xTaskCreate(&task_entry_point,
-                                     _attributes.name(),
-                                     _attributes.stack_size() / sizeof(configSTACK_DEPTH_TYPE),
-                                     static_cast<void*>(this),
-                                     translate_priority<UBaseType_t>(_attributes.priority()),
-                                     &_handle);
-    if (!success)
+    BaseType_t success = pdFALSE;
+    if (_attributes.stack_pointer() == nullptr)
+    {
+#if configSUPPORT_DYNAMIC_ALLOCATION == 1
+        // Use the FreeRTOS heap implementation to dynamically allocate a stack
+        success = xTaskCreate(&task_entry_point,
+                              _attributes.name(),
+                              _attributes.stack_size() / sizeof(configSTACK_DEPTH_TYPE),
+                              static_cast<void*>(this),
+                              translate_priority<UBaseType_t>(_attributes.priority()),
+                              &_handle);
+#else
+        configASSERT(!"Dynamic task allocation is not enabled in the OS kernel");
+#endif
+    }
+    else
+    {
+#if configSUPPORT_STATIC_ALLOCATION == 1
+        // Align the application provided stack pointer with the data type used by FreeRTOS for task stacks
+        std::size_t alignedStackSize = 0;
+        void *alignedPointer = std::align(alignof(StackType_t),
+                                          _attributes.stack_size(),
+                                          _attributes.stack_pointer(),
+                                          alignedStackSize);
+
+        // Use the application provided stack memory to create the task
+        StaticTask_t static_tcb = {0};
+        success = xTaskCreateStatic(&task_entry_point,
+                                    _attributes.name(),
+                                    alignedStackSize / sizeof(configSTACK_DEPTH_TYPE),
+                                    static_cast<void*>(this),
+                                    translate_priority<UBaseType_t>(_attributes.priority()),
+                                    reinterpret_cast<StackType_t *>(alignedPointer),
+                                    &static_tcb); /// @todo TODO: Use the internal task record statically allocated TCB here
+#else
+        configASSERT(!"Static task allocation is not enabled in the OS kernel");
+#endif
+    }
+
+    if (success == pdFALSE)
     {
         configASSERT(!"Task Constructor Failed");
     }
