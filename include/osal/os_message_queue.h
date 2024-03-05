@@ -62,7 +62,7 @@ public:
      * @brief Returns the underlying operating system queue handle for this message queue.
      * @return Native OS queue handle
      */
-    native_handle_type native_handle() { return _handle; }
+    native_handle_type native_handle() const { return _handle; }
 
     /**
      * @brief Sends data through the message queue. If the message queue is full,
@@ -152,19 +152,19 @@ public:
      * @brief Returns the size of each item in the queue.
      * @return Size of each item in the queue in bytes
      */
-    std::size_t item_size() { return _item_size; }
+    std::size_t item_size() const { return _item_size; }
 
     /**
      * @brief Returns the maximum number of items that can be stored in the queue.
      * @return Maximum number of items that can be stored in the queue
      */
-    std::size_t depth() { return _max_num_items; }
+    std::size_t depth() const { return _max_num_items; }
 
     /**
      * @brief Returns the name of the IPC message queue.
      * @return Name of the IPC message queue
      */
-    const char *name() { return _name; }
+    const char *name() const { return _name; }
 
 private:
     // Delete copy & move

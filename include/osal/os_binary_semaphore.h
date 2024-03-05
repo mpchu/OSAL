@@ -24,7 +24,7 @@ public:
 
     ~os_binary_semaphore();
 
-    native_handle_type native_handle() { return _handle; }
+    native_handle_type native_handle() const { return _handle; }
 
     void release();
 
@@ -38,7 +38,7 @@ public:
         return impl_try_acquire_for(const std::chrono::duration_cast<osal::chrono::ticks>(timeout));
     }
 
-    constexpr std::size_t maximum() noexcept { return 1; }
+    constexpr std::size_t maximum() const noexcept { return 1; }
 
 private:
     // Delete copy & move

@@ -82,13 +82,13 @@ public:
      * @brief Returns the underlying operating system task handle for this object.
      * @return Native OS task handle
      */
-    native_handle_type native_handle() { return _handle; }
+    native_handle_type native_handle() const { return _handle; }
 
     /**
      * @brief Returns the task attributes.
      * @return Task attributes 
      */
-    task_attributes attributes() { return _attributes; }
+    task_attributes attributes() const { return _attributes; }
 
     /**
      * @brief Suspends execution of the calling task until the target task

@@ -23,7 +23,7 @@ public:
 
     ~os_mutex();
 
-    native_handle_type native_handle() { return _handle; }
+    native_handle_type native_handle() const { return _handle; }
 
     void lock();
 

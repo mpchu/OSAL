@@ -45,10 +45,10 @@ public:
         return *this;
     }
 
-    const char *name()       { return _name; }
-    uint8_t *stack_pointer() { return _stack_ptr; }
-    std::size_t stack_size() { return _stack_size; }
-    int priority()           { return _priority; }
+    const char *name()       const { return _name; }
+    uint8_t *stack_pointer() const { return _stack_ptr; }
+    std::size_t stack_size() const { return _stack_size; }
+    int priority()           const { return _priority; }
 };
 
 } // namespace osal
