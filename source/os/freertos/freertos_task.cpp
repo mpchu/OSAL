@@ -48,8 +48,10 @@ void freertos_task::create_task()
 template<>
 void freertos_task::destroy_task()
 {
-#if INCLUDE_vTaskDelayUntil == 1
+#if INCLUDE_vTaskDelete == 1
     vTaskDelete(_handle);
+#else
+    configASSERT(!"Task deletion is not enabled in the OS kernel");
 #endif
 }
 
