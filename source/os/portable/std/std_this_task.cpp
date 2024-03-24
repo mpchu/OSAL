@@ -21,7 +21,7 @@ void os_sleep_for(const osal::chrono::ticks &sleep_duration)
 }
 
 template <>
-void os_sleep_until(const osal::chrono::system_clock::time_point &wakeup_time)
+void os_sleep_until(const std::chrono::time_point<osal::chrono::steady_clock> &wakeup_time)
 {
     std::this_thread::sleep_until(wakeup_time);
 }

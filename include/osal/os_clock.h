@@ -26,7 +26,7 @@ public:
     using duration = std::chrono::duration<os_clock::rep, os_clock::period>;
     using time_point = std::chrono::time_point<os_clock>;
 
-    static constexpr bool is_steady = false;
+    static constexpr bool is_steady = true;
 
     static time_point now() noexcept;
 
@@ -43,8 +43,8 @@ public:
 
 } // namespace details
 
-using system_clock = details::os_clock<>;
-using ticks = system_clock::duration;
+using steady_clock = details::os_clock<>;
+using ticks = steady_clock::duration;
 
 } // namespace chrono
 

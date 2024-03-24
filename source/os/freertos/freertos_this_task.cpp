@@ -23,16 +23,16 @@ void os_sleep_for(const osal::chrono::ticks &sleep_duration)
 }
 
 template <>
-void os_sleep_until(const std::chrono::time_point<osal::chrono::system_clock> &wakeup_time)
+void os_sleep_until(const std::chrono::time_point<osal::chrono::steady_clock> &wakeup_time)
 {
-    const TickType_t wakeupTick = wakeup_time.time_since_epoch().count();
-    TickType_t now = osal::chrono::system_clock::current_tick().count();
-
     // Handle the case where wakeup_time has already passed
-    TickType_t ticksToSleep = (wakeupTick > now) 
-                              ? wakeupTick - now
-                              : 0;
-    vTaskDelayUntil(&now, ticksToSleep);
+    const auto now = osal::chrono::steady_clock::now();
+    const osal::chrono::ticks ticksToSleep = (wakeup_time > now)
+                                             ? wakeup_time - now
+                                             : osal::chrono::ticks::zero();
+
+    TickType_t nativeNow = now.time_since_epoch().count();
+    vTaskDelayUntil(&nativeNow, ticksToSleep.count());
 }
 
 } // namespace details
