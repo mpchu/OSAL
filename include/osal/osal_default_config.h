@@ -62,7 +62,7 @@ constexpr int32_t configOSAL_MAXIMUM_TASK_PRIORITY = configOSAL_NUM_TASK_PRIORIT
 #ifndef configOSAL_TICK_TYPE
     #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
         #include <chrono>
-        #define configOSAL_TICK_TYPE std::chrono::system_clock::rep
+        #define configOSAL_TICK_TYPE std::chrono::steady_clock::rep
     #else
         #error "configOSAL_TICK_TYPE is not defined for this platform
     #endif
@@ -71,7 +71,7 @@ constexpr int32_t configOSAL_MAXIMUM_TASK_PRIORITY = configOSAL_NUM_TASK_PRIORIT
 #ifndef configOSAL_TICK_RATE_HZ
     #if configOSAL_HAS_STD_CONCURRENCY_SUPPORT_LIB
         #include <chrono>
-        #define configOSAL_TICK_RATE_HZ std::chrono::system_clock::period::den
+        #define configOSAL_TICK_RATE_HZ std::chrono::steady_clock::period::den
     #else
         #error "configOSAL_TICK_RATE_HZ is not defined for this platform
     #endif
